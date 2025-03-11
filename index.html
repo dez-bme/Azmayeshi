@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Article Search</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    form { margin-bottom: 20px; }
+    ul { list-style-type: none; padding: 0; }
+    li { margin: 10px 0; }
+    a { text-decoration: none; color: #007BFF; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>Article Search</h1>
+  <form id="searchForm">
+    <input type="text" id="query" placeholder="Search for an author..." required>
+    <button type="submit">Search</button>
+  </form>
+
+  <h2>Results</h2>
+  <ul id="results"></ul>
+
+  <h2>Admin Section</h2>
+  <form id="uploadForm">
+    <input type="text" id="author" placeholder="Author name" required>
+    <input type="file" id="file" required>
+    <button type="submit">Upload Article</button>
+  </form>
+
+  <script>
+    const YOUR_GOOGLE_APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbyWZtsCqcyg4O2LhDKRualDFepFvhKV5y3ap8pR5-QG43d_Yb1MuT2fsR9WW9ZoK9R4/exec';
+    const SCRIPT_URL = YOUR_GOOGLE_APPS_SCRIPT_URL;//'YOUR_GOOGLE_APPS_SCRIPT_URL';
+
+    // Search for authors
+    document.getElementById('searchForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const query = document.getElementById('query').value;
+      //alert(query)
+      const response = await fetch(`${SCRIPT_URL}?action=search&query=${query}`);
+      const results = await response.json();
+      displayResults(results);
+    });
+
+    // Upload file
+    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const author = document.getElementById('author').value;
+      const file = document.getElementById('file').files[0];
+      const reader = new FileReader();
+
+      reader.onload = async () => {
+        const fileData = reader.result.split(',')[1]; // Get base64 data
+        const response = await fetch(`${SCRIPT_URL}?action=upload&author=${author}&filename=${file.name}&file=${fileData}`);
+        const result = await response.json();
+        alert(result.message);
+      };
+
+      reader.readAsDataURL(file);
+    });
+
+    // Display results
+    function displayResults(results) {
+      const resultsList = document.getElementById('results');
+      resultsList.innerHTML = '';
+      results.forEach(result => {
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `<strong>${result.author}</strong>: <a href="https://drive.google.com/uc?export=download&id=${result.fileId}" target="_blank">${result.article}</a>`;
+        resultsList.appendChild(listItem);
+      });
+    }
+  </script>
+</body>
+</html>
