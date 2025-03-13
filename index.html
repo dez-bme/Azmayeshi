@@ -1,75 +1,101 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Article Search</title>
+  <title>Submit Data to Google Sheet</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    form { margin-bottom: 20px; }
-    ul { list-style-type: none; padding: 0; }
-    li { margin: 10px 0; }
-    a { text-decoration: none; color: #007BFF; }
-    a:hover { text-decoration: underline; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #response {
+      margin-top: 20px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-  <h1>Article Search</h1>
-  <form id="searchForm">
-    <input type="text" id="query" placeholder="Search for an author..." required>
-    <button type="submit">Search</button>
+  <h1>Submit Data to Google Sheet</h1>
+  <form id="dataForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="age">Age:</label>
+    <input type="number" id="age" name="age" required>
+
+    <label for="city">City:</label>
+    <input type="text" id="city" name="city" required>
+
+    <button type="submit">Submit</button>
   </form>
 
-  <h2>Results</h2>
-  <ul id="results"></ul>
-
-  <h2>Admin Section</h2>
-  <form id="uploadForm">
-    <input type="text" id="author" placeholder="Author name" required>
-    <input type="file" id="file" required>
-    <button type="submit">Upload Article</button>
-  </form>
+  <div id="response"></div>
 
   <script>
-    const YOUR_GOOGLE_APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbyWZtsCqcyg4O2LhDKRualDFepFvhKV5y3ap8pR5-QG43d_Yb1MuT2fsR9WW9ZoK9R4/exec';
-    const SCRIPT_URL = YOUR_GOOGLE_APPS_SCRIPT_URL;//'YOUR_GOOGLE_APPS_SCRIPT_URL';
+    document.getElementById("dataForm").addEventListener("submit", async function (event) {
+      event.preventDefault(); // Prevent the form from submitting the traditional way
 
-    // Search for authors
-    document.getElementById('searchForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const query = document.getElementById('query').value;
-      //alert(query)
-      const response = await fetch(`${SCRIPT_URL}?action=search&query=${query}`);
-      const results = await response.json();
-      displayResults(results);
-    });
+      // Get the input values
+      const name = document.getElementById("name").value;
+      const age = document.getElementById("age").value;
+      const city = document.getElementById("city").value;
 
-    // Upload file
-    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const author = document.getElementById('author').value;
-      const file = document.getElementById('file').files[0];
-      const reader = new FileReader();
-
-      reader.onload = async () => {
-        const fileData = reader.result.split(',')[1]; // Get base64 data
-        const response = await fetch(`${SCRIPT_URL}?action=upload&author=${author}&filename=${file.name}&file=${fileData}`);
-        const result = await response.json();
-        alert(result.message);
+      // Prepare the data to send
+      const data = {
+        name: name,
+        age: age,
+        city: city,
       };
 
-      reader.readAsDataURL(file);
+      // Call the function to send data to Google Apps Script
+      await sendDataToSheet(data);
     });
 
-    // Display results
-    function displayResults(results) {
-      const resultsList = document.getElementById('results');
-      resultsList.innerHTML = '';
-      results.forEach(result => {
-        const listItem = document.createElement('li');
-        listItem.innerHTML = `<strong>${result.author}</strong>: <a href="https://drive.google.com/uc?export=download&id=${result.fileId}" target="_blank">${result.article}</a>`;
-        resultsList.appendChild(listItem);
-      });
+    async function sendDataToSheet(data) {
+      //const webAppUrl = "https://script.google.com/macros/s/your-deployment-id/exec";
+      const webAppUrl='https://script.google.com/macros/s/AKfycbwmTx73XIw8IQKWUz3P4vLJTymnzr7Pl6GD6hDZ7RnqR13v87XXlBT5dkY3iBnUASWz/exec';
+
+      try {
+        const response = await fetch(webAppUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const result = await response.json();
+        document.getElementById("response").innerText = "Response: " + JSON.stringify(result);
+      } catch (error) {
+        document.getElementById("response").innerText = "Error: " + error.message;
+      }
     }
   </script>
 </body>
