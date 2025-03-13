@@ -62,27 +62,18 @@
       const age = document.getElementById("age").value;
       const city = document.getElementById("city").value;
 
-      // Prepare the data to send
-      const data = {
-        name: name,
-        age: age,
-        city: city,
-      };
+      // Prepare the data to send as query parameters
+      const webAppUrl = "https://script.google.com/macros/s/AKfycbwNrYQQOoDLbKmNm_uuDsVx4E7rtLT3AP0cwD54DWNl0Qvhru5P4KlGUC6yV2Y7fesW/exec" + 
+        `?name=${encodeURIComponent(name)}&age=${encodeURIComponent(age)}&city=${encodeURIComponent(city)}`;
 
       // Call the function to send data to Google Apps Script
-      await sendDataToSheet(data);
+      await sendDataToSheet(webAppUrl);
     });
 
-    async function sendDataToSheet(data) {
-      const webAppUrl = "https://script.google.com/macros/s/AKfycbyFuVo2Bg0v8D71qgYiGw1_5zsayrDQUsnsL1WVe_7oCDbmmiUhTY4niaqkbe4ITf_M/exec"; // Replace with your Google Apps Script Web App URL
-
+    async function sendDataToSheet(url) {
       try {
-        const response = await fetch(webAppUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
+        const response = await fetch(url, {
+          method: "GET", // Use GET instead of POST
         });
 
         if (!response.ok) {
