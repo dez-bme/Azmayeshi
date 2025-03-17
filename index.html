@@ -6,6 +6,7 @@
     body { font-family: Arial, sans-serif; margin: 20px; }
     #results, #articles { margin-top: 20px; }
     button { margin: 5px; }
+    .article { margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
   </style>
 </head>
 <body>
@@ -60,9 +61,9 @@
         } else {
           const articles = result.articles;
           const articlesHTML = articles.map(article => `
-            <div>
+            <div class="article">
               <h3>${article.title}</h3>
-              <p>Upload Date: ${article.uploadDate}</p>
+              <p><strong>Upload Date:</strong> ${article.uploadDate}</p>
               <a href="${article.downloadLink}" target="_blank">Download</a>
             </div>
           `).join("");
