@@ -1,89 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Submit Data to Google Sheet</title>
+  <title>Article Search</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: bold;
-    }
-    input {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 16px;
-      box-sizing: border-box;
-    }
-    button {
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    #response {
-      margin-top: 20px;
-      font-weight: bold;
-    }
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    #results, #articles { margin-top: 20px; }
+    button { margin: 5px; }
   </style>
 </head>
 <body>
-  <h1>Submit Data to Google Sheet</h1>
-  <form id="dataForm">
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required>
+  <h1>Search for Articles by Author</h1>
+  <input type="text" id="author-input" placeholder="Enter author name" />
+  <button onclick="searchAuthor()">Search</button>
 
-    <label for="age">Age:</label>
-    <input type="number" id="age" name="age" required>
-
-    <label for="city">City:</label>
-    <input type="text" id="city" name="city" required>
-
-    <button type="submit">Submit</button>
-  </form>
-
-  <div id="response"></div>
+  <div id="results"></div>
+  <div id="articles"></div>
 
   <script>
-    document.getElementById("dataForm").addEventListener("submit", async function (event) {
-      event.preventDefault(); // Prevent the form from submitting the traditional way
+    const WEB_APP_URL = "YOUR_WEB_APP_URL"; // Replace with your GAS web app URL
 
-      // Get the input values
-      const name = document.getElementById("name").value;
-      const age = document.getElementById("age").value;
-      const city = document.getElementById("city").value;
+    async function searchAuthor() {
+      const authorName = document.getElementById("author-input").value;
+      if (!authorName) return alert("Please enter an author name.");
 
-      // Prepare the data to send as query parameters
-      const webAppUrl = "https://script.google.com/macros/s/AKfycbwNrYQQOoDLbKmNm_uuDsVx4E7rtLT3AP0cwD54DWNl0Qvhru5P4KlGUC6yV2Y7fesW/exec" + 
-        `?name=${encodeURIComponent(name)}&age=${encodeURIComponent(age)}&city=${encodeURIComponent(city)}`;
-
-      // Call the function to send data to Google Apps Script
-      await sendDataToSheet(webAppUrl);
-    });
-
-    async function sendDataToSheet(url) {
       try {
-        const response = await fetch(url, {
-          method: "GET", // Use GET instead of POST
+        const response = await fetch(WEB_APP_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "searchAuthor", authorName }),
         });
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-
         const result = await response.json();
-        document.getElementById("response").innerText = "Response: " + JSON.stringify(result);
+
+        if (result.error) {
+          alert(result.error);
+        } else {
+          const authors = result.authors;
+          const buttonsHTML = authors.map(author => `
+            <button onclick="showArticles('${author}')">${author}</button>
+          `).join("");
+          document.getElementById("results").innerHTML = buttonsHTML;
+          document.getElementById("articles").innerHTML = ""; // Clear previous articles
+        }
       } catch (error) {
-        document.getElementById("response").innerText = "Error: " + error.message;
+        console.error("Error:", error);
+      }
+    }
+
+    async function showArticles(selectedAuthor) {
+      try {
+        const response = await fetch(WEB_APP_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "getArticlesByAuthor", selectedAuthor }),
+        });
+        const result = await response.json();
+
+        if (result.error) {
+          alert(result.error);
+        } else {
+          const articles = result.articles;
+          const articlesHTML = articles.map(article => `
+            <div>
+              <h3>${article.title}</h3>
+              <p>Upload Date: ${article.uploadDate}</p>
+              <a href="${article.downloadLink}" target="_blank">Download</a>
+            </div>
+          `).join("");
+          document.getElementById("articles").innerHTML = articlesHTML;
+        }
+      } catch (error) {
+        console.error("Error:", error);
       }
     }
   </script>
