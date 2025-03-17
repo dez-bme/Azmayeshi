@@ -1,85 +1,80 @@
-  
-  <!DOCTYPE html>
-<html>
-<head>
-  <title>Article Search</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    #results, #articles { margin-top: 20px; }
-    button { margin: 5px; }
-    .article { margin-bottom: 10px; }
-    .article div { display: flex; align-items: center; gap: 10px; }
-    .article a { color: #1a73e8; text-decoration: none; }
-    .article a:hover { text-decoration: underline; }
-  </style>
-</head>
-<body>
-  <h1>Search for Articles My Author</h1>
-  <input type="text" id="author-input" placeholder="Enter author name" />
-  <button onclick="searchAuthor()">Search</button>
+// Google Apps Script (Code.gs)
 
-  <div id="results"></div>
-  <div id="articles"></div>
+function doGet(e) {
+  if (e.parameter.action === 'searchAuthors') {
+    return searchAuthors(e);
+  } else if (e.parameter.action === 'getArticles') {
+    return getArticles(e);
+  } else {
+    return HtmlService.createHtmlOutputFromFile('index')
+      .addMetaTag('viewport', 'width=device-width, initial-scale=1')
+      .addHeader('Access-Control-Allow-Origin', '*')
+      .addHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
+      .addHeader('Access-Control-Allow-Headers', 'Content-Type');
+  }
+}
 
-  <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzWcwlpfOGzuV-o1lTMMViMOYEVb1PXXblw47WatsZPFi7O8HlwO8TzDfdNLDFXfke5/exec"; // Replace with your GAS web app URL
+function searchAuthors(e) {
+  try {
+    const searchTerm = e.parameter.searchTerm.toLowerCase();
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getActiveSheet();
+    const data = sheet.getDataRange().getValues();
+    const authors = [];
 
-    async function searchAuthor() {
-      const authorName = document.getElementById("author-input").value;
-      if (!authorName) return alert("Please enter an author name.");
-
-      try {
-        const response = await fetch(WEB_APP_URL, {
-          mode: 'cors',
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action: "searchAuthor", authorName }),
-        });
-        const result = await response.json();
-
-        if (result.error) {
-          alert(result.error);
-        } else {
-          const authors = result.authors;
-          const buttonsHTML = authors.map(author => `
-            <button onclick="showArticles('${author}')">${author}</button>
-          `).join("");
-          document.getElementById("results").innerHTML = buttonsHTML;
-          document.getElementById("articles").innerHTML = ""; // Clear previous articles
-        }
-      } catch (error) {
-        console.error("Error:", error);
+    for (let i = 1; i < data.length; i++) { // Start from 1 to skip headers
+      if (data[i][0].toLowerCase().includes(searchTerm)) { // Author column (0)
+        authors.push(data[i][0]);
       }
     }
 
-    async function showArticles(selectedAuthor) {
-      try {
-        const response = await fetch(WEB_APP_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action: "getArticlesByAuthor", selectedAuthor }),
-        });
-        const result = await response.json();
+    // Remove duplicates
+    const uniqueAuthors = [...new Set(authors)];
 
-        if (result.error) {
-          alert(result.error);
-        } else {
-          const articles = result.articles;
-          const articlesHTML = articles.map(article => `
-            <div class="article">
-              <div>
-                <span><strong>${article.title}</strong></span>
-                <span>${article.uploadDate}</span>
-                <a href="${article.downloadLink}" target="_blank">Download</a>
-              </div>
-            </div>
-          `).join("");
-          document.getElementById("articles").innerHTML = articlesHTML;
-        }
-      } catch (error) {
-        console.error("Error:", error);
+    return ContentService.createTextOutput(JSON.stringify(uniqueAuthors))
+      .setMimeType(ContentService.MimeType.JSON)
+      .addHeader('Access-Control-Allow-Origin', '*')
+      .addHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
+      .addHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ error: error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON)
+      .addHeader('Access-Control-Allow-Origin', '*')
+      .addHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
+      .addHeader('Access-Control-Allow-Headers', 'Content-Type');
+  }
+}
+
+function getArticles(e) {
+  try {
+    const authorName = e.parameter.authorName;
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getActiveSheet();
+    const data = sheet.getDataRange().getValues();
+    const articles = [];
+
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === authorName) {
+        articles.push({
+          title: data[i][1], // Article title (1)
+          uploadDate: data[i][4], // Upload date (4)
+          downloadLink: data[i][3] // Download link (3)
+        });
       }
     }
-  </script>
-</body>
-</html>
+
+    return ContentService.createTextOutput(JSON.stringify(articles))
+      .setMimeType(ContentService.MimeType.JSON)
+      .addHeader('Access-Control-Allow-Origin', '*')
+      .addHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
+      .addHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ error: error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON)
+      .addHeader('Access-Control-Allow-Origin', '*')
+      .addHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
+      .addHeader('Access-Control-Allow-Headers', 'Content-Type');
+  }
+}
