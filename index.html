@@ -1,50 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Article Search</title>
+    <title>GitHub Pages with Embedded Google Apps Script</title>
 </head>
 <body>
-  <h1>Search mAuthors</h1>
-  <input type="text" id="authorSearch" placeholder="Enter author name">
-  <button onclick="searchAuthors()">Search</button>
-  <ul id="authorList"></ul>
-  <ul id="articleList"></ul>
-
-  <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyyJutVGetnD67-QqG-1uvijUmgjbH6si9eW6CCGH_K5b0se-5FpYriQ_6O_DbHU8popA/exec'; // Replace with your script URL
-
-    function searchAuthors() {
-      const searchTerm = document.getElementById('authorSearch').value;
-      fetch(`${scriptURL}?action=searchAuthors&searchTerm=${searchTerm}`)
-        .then(response => response.json())
-        .then(authors => {
-          const authorList = document.getElementById('authorList');
-          authorList.innerHTML = '';
-          authors.forEach(author => {
-            const li = document.createElement('li');
-            li.textContent = author;
-            li.addEventListener('click', () => getArticles(author));
-            authorList.appendChild(li);
-          });
-        });
-    }
-
-    function getArticles(authorName) {
-      fetch(`${scriptURL}?action=getArticles&authorName=${authorName}`)
-        .then(response => response.json())
-        .then(articles => {
-          const articleList = document.getElementById('articleList');
-          articleList.innerHTML = '';
-          articles.forEach(article => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-              ${article.title} (${article.uploadDate})
-              <a href="${article.downloadLink}" target="_blank">Download</a>
-            `;
-            articleList.appendChild(li);
-          });
-        });
-    }
-  </script>
+    <iframe src="https://script.google.com/macros/s/AKfycbwWSscalROB6WhSlfGBmuL3gIPvG6so74WC1isoOfRkX-47Is6U6EBM9ih4vRgr9SBE/exec" width="500" height="300"></iframe>
 </body>
 </html>
