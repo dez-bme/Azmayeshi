@@ -1,80 +1,50 @@
-// Google Apps Script (Code.gs)
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Article Search</title>
+</head>
+<body>
+  <h1>Search Authors</h1>
+  <input type="text" id="authorSearch" placeholder="Enter author name">
+  <button onclick="searchAuthors()">Search</button>
+  <ul id="authorList"></ul>
+  <ul id="articleList"></ul>
 
-function doGet(e) {
-  if (e.parameter.action === 'searchAuthors') {
-    return searchAuthors(e);
-  } else if (e.parameter.action === 'getArticles') {
-    return getArticles(e);
-  } else {
-    return HtmlService.createHtmlOutputFromFile('index')
-      .addMetaTag('viewport', 'width=device-width, initial-scale=1')
-      .addHeader('Access-Control-Allow-Origin', '*')
-      .addHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
-      .addHeader('Access-Control-Allow-Headers', 'Content-Type');
-  }
-}
+  <script>
+    const scriptURL = 'YOUR_GOOGLE_SCRIPT_URL'; // Replace with your script URL
 
-function searchAuthors(e) {
-  try {
-    const searchTerm = e.parameter.searchTerm.toLowerCase();
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = ss.getActiveSheet();
-    const data = sheet.getDataRange().getValues();
-    const authors = [];
-
-    for (let i = 1; i < data.length; i++) { // Start from 1 to skip headers
-      if (data[i][0].toLowerCase().includes(searchTerm)) { // Author column (0)
-        authors.push(data[i][0]);
-      }
-    }
-
-    // Remove duplicates
-    const uniqueAuthors = [...new Set(authors)];
-
-    return ContentService.createTextOutput(JSON.stringify(uniqueAuthors))
-      .setMimeType(ContentService.MimeType.JSON)
-      .addHeader('Access-Control-Allow-Origin', '*')
-      .addHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
-      .addHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ error: error.toString() }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .addHeader('Access-Control-Allow-Origin', '*')
-      .addHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
-      .addHeader('Access-Control-Allow-Headers', 'Content-Type');
-  }
-}
-
-function getArticles(e) {
-  try {
-    const authorName = e.parameter.authorName;
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = ss.getActiveSheet();
-    const data = sheet.getDataRange().getValues();
-    const articles = [];
-
-    for (let i = 1; i < data.length; i++) {
-      if (data[i][0] === authorName) {
-        articles.push({
-          title: data[i][1], // Article title (1)
-          uploadDate: data[i][4], // Upload date (4)
-          downloadLink: data[i][3] // Download link (3)
+    function searchAuthors() {
+      const searchTerm = document.getElementById('authorSearch').value;
+      fetch(`${scriptURL}?action=searchAuthors&searchTerm=${searchTerm}`)
+        .then(response => response.json())
+        .then(authors => {
+          const authorList = document.getElementById('authorList');
+          authorList.innerHTML = '';
+          authors.forEach(author => {
+            const li = document.createElement('li');
+            li.textContent = author;
+            li.addEventListener('click', () => getArticles(author));
+            authorList.appendChild(li);
+          });
         });
-      }
     }
 
-    return ContentService.createTextOutput(JSON.stringify(articles))
-      .setMimeType(ContentService.MimeType.JSON)
-      .addHeader('Access-Control-Allow-Origin', '*')
-      .addHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
-      .addHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ error: error.toString() }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .addHeader('Access-Control-Allow-Origin', '*')
-      .addHeader('Access-Control-Allow-Methods', 'GET, OPTIONS')
-      .addHeader('Access-Control-Allow-Headers', 'Content-Type');
-  }
-}
+    function getArticles(authorName) {
+      fetch(`${scriptURL}?action=getArticles&authorName=${authorName}`)
+        .then(response => response.json())
+        .then(articles => {
+          const articleList = document.getElementById('articleList');
+          articleList.innerHTML = '';
+          articles.forEach(article => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+              ${article.title} (${article.uploadDate})
+              <a href="${article.downloadLink}" target="_blank">Download</a>
+            `;
+            articleList.appendChild(li);
+          });
+        });
+    }
+  </script>
+</body>
+</html>
