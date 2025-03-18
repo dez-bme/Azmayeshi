@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Name Check</title>
+  <title>Name Mheck (POST)</title>
 </head>
 <body>
   <h1>Enter Name</h1>
@@ -15,15 +15,25 @@
     function checkName() {
       const name = document.getElementById('nameInput').value;
 
-      fetch(`${scriptURL}?name=${name}`)
-        .then(response => response.json())
-        .then(data => {
-          document.getElementById('result').textContent = data.result;
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          document.getElementById('result').textContent = 'An error occurred.';
-        });
+      const params = new URLSearchParams();
+      params.append('name', name);
+
+      fetch(scriptURL, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Content-Type': "text/plain;charset=utf-8",
+        },
+        body: params.toString()
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('result').textContent = data.result;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('result').textContent = 'An error occurred.';
+      });
     }
   </script>
 </body>
