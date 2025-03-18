@@ -50,8 +50,16 @@
       fetch(gasUrl, {
         method: 'POST',
         body: requestBody, // Send the message and action as plain text
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded', // Set the content type
+        },
       })
-        .then(response => response.text()) // Parse the response as plain text
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.text(); // Parse the response as plain text
+        })
         .then(data => {
           // Display the response from the backend
           responseDiv.textContent = `Response from backend: ${data}`;
@@ -59,7 +67,7 @@
         .catch(error => {
           // Handle errors
           responseDiv.textContent = 'An error occurred. Please try again.';
-          console.error(error);
+          console.error('Error:', error);
         });
     }
   </script>
