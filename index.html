@@ -1,12 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>GitHub Pages with Embedded Google Apps Script</title>
+  <title>Name Check</title>
 </head>
 <body>
-   
-    <p>Click the link to access the GAS web app:</p>
+  <h1>Enter Name</h1>
+  <input type="text" id="nameInput" placeholder="Enter Jack or Betty">
+  <button onclick="checkName()">Check</button>
+  <div id="result"></div>
 
-  <a href="https://script.google.com/macros/s/AKfycbzuA7QzzBwjNb7CoZPrjtIuj6tzWI4TixIzuov6jpCxgSgTYpBLftaPx6GPOTL80EcE/exec" target="_blank">Open GAS Web App</a>
+  <script>
+    const scriptURL = 'YOUR_GAS_WEB_APP_URL'; // Replace with your GAS web app URL
+
+    function checkName() {
+      const name = document.getElementById('nameInput').value;
+
+      fetch(`${scriptURL}?name=${name}`)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('result').textContent = data.result;
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          document.getElementById('result').textContent = 'An error occurred.';
+        });
+    }
+  </script>
 </body>
 </html>
