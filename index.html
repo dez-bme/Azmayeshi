@@ -1,3 +1,4 @@
+// https://script.google.com/macros/s/AKfycbxW4cHZ3BNtckE2nF2EPIARyygUihDKMlNykgSfDKQSOhDr9ZEJLJrJqfUYRk6BjRk1/exec
 
 <!DOCTYPE html>
 <html lang="en">
@@ -57,12 +58,18 @@
       const gasUrl = 'https://script.google.com/macros/s/AKfycbxW4cHZ3BNtckE2nF2EPIARyygUihDKMlNykgSfDKQSOhDr9ZEJLJrJqfUYRk6BjRk1/exec';
 
       // Send the author name to the backend as plain text
-      fetch(`${gasUrl}?action=search&author=${encodeURIComponent(authorName)}`)
-        .then(response => response.json())
+      fetch(gasUrl, {
+        method: 'POST',
+        body: authorName, // Send the authorName as plain text
+      })
+        .then(response => response.text()) // Parse the response as plain text
         .then(data => {
-          if (data.authors && data.authors.length > 0) {
+          // Parse the plain text response as JSON
+          const responseData = JSON.parse(data);
+
+          if (responseData.authors && responseData.authors.length > 0) {
             // Display the list of authors
-            data.authors.forEach(author => {
+            responseData.authors.forEach(author => {
               const authorElement = document.createElement('div');
               authorElement.className = 'author';
               authorElement.textContent = author;
@@ -86,13 +93,19 @@
       const gasUrl = 'https://script.google.com/macros/s/AKfycbxW4cHZ3BNtckE2nF2EPIARyygUihDKMlNykgSfDKQSOhDr9ZEJLJrJqfUYRk6BjRk1/exec';
 
       // Fetch articles for the selected author
-      fetch(`${gasUrl}?action=fetchArticles&author=${encodeURIComponent(author)}`)
-        .then(response => response.json())
+      fetch(gasUrl, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'fetchArticles', author }), // Send the action and author as plain text
+      })
+        .then(response => response.text()) // Parse the response as plain text
         .then(data => {
-          if (data.articles && data.articles.length > 0) {
+          // Parse the plain text response as JSON
+          const responseData = JSON.parse(data);
+
+          if (responseData.articles && responseData.articles.length > 0) {
             // Display the articles
             articlesDiv.innerHTML = '<h2>Articles:</h2>';
-            data.articles.forEach(article => {
+            responseData.articles.forEach(article => {
               const articleElement = document.createElement('div');
               articleElement.className = 'article';
               articleElement.innerHTML = `
@@ -113,6 +126,4 @@
     }
   </script>
 </body>
-</html>
-
-     
+</html>     
