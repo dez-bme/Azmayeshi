@@ -1,39 +1,57 @@
-<!DOCTYPE html>
-<html>
+
+       <!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>Name Mheck (POST)</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 50px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: green;
+    }
+  </style>
 </head>
 <body>
-  <h1>Enter Name</h1>
-  <input type="text" id="nameInput" placeholder="Enter Jack or Betty">
-  <button onclick="checkName()">Check</button>
+  <h1>Search App</h1>
+  <input type="text" id="searchInput" placeholder="Enter Jack or Betty">
+  <button onclick="search()">Search</button>
   <div id="result"></div>
 
   <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxQkKzjHG_dFW2pGS_rq5I2DRt9mV-VvxAIv02gOd4a4MDSom2EGNnrMKDSUn8CWWOBHQ/exec'; // Replace with your GAS web app URL
+    async function search() {
+      const input = document.getElementById('searchInput').value.trim();
+      const resultDiv = document.getElementById('result');
 
-    function checkName() {
-      const name = document.getElementById('nameInput').value;
+      if (!input) {
+        resultDiv.textContent = 'Please enter a name.';
+        return;
+      }
 
-      const params = new URLSearchParams();
-      params.append('name', name);
+      try {
+        // Replace with your Google Apps Script deployment URL
+        const gasUrl = 'https://script.google.com/macros/s/AKfycbxQkKzjHG_dFW2pGS_rq5I2DRt9mV-VvxAIv02gOd4a4MDSom2EGNnrMKDSUn8CWWOBHQ/exec';
+        const response = await fetch(`${gasUrl}?name=${encodeURIComponent(input)}`);
+        const data = await response.json();
 
-      fetch(scriptURL, {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-          'Content-Type': "text/plain;charset=utf-8",
-        },
-        body: params.toString()
-      })
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('result').textContent = data.result;
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        document.getElementById('result').textContent = 'An error occurred.';
-      });
+        if (data.result === 1 || data.result === 2) {
+          resultDiv.textContent = `Result: ${data.result}`;
+        } else {
+          resultDiv.textContent = 'Invalid input.';
+        }
+      } catch (error) {
+        resultDiv.textContent = 'An error occurred. Please try again.';
+        console.error(error);
+      }
     }
   </script>
 </body>
