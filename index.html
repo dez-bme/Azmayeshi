@@ -1,10 +1,9 @@
-
-       <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Search App</title>
+  <title>Send Message to Backend</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -14,7 +13,7 @@
       padding: 10px;
       font-size: 16px;
     }
-    #result {
+    #response {
       margin-top: 20px;
       font-size: 18px;
       color: green;
@@ -22,34 +21,36 @@
   </style>
 </head>
 <body>
-  <h1>Search App</h1>
-  <input type="text" id="searchInput" placeholder="Enter Jack or Betty">
-  <button onclick="search()">Search</button>
-  <div id="result"></div>
+  <h1>Send Message to Backend</h1>
+  <input type="text" id="messageInput" placeholder="Enter a message">
+  <button onclick="sendMessage()">Send</button>
+  <div id="response"></div>
 
   <script>
-    async function search() {
-      const input = document.getElementById('searchInput').value.trim();
-      const resultDiv = document.getElementById('result');
+    async function sendMessage() {
+      const message = document.getElementById('messageInput').value.trim();
+      const responseDiv = document.getElementById('response');
 
-      if (!input) {
-        resultDiv.textContent = 'Please enter a name.';
+      if (!message) {
+        responseDiv.textContent = 'Please enter a message.';
         return;
       }
 
       try {
         // Replace with your Google Apps Script deployment URL
         const gasUrl = 'https://script.google.com/macros/s/AKfycbxQkKzjHG_dFW2pGS_rq5I2DRt9mV-VvxAIv02gOd4a4MDSom2EGNnrMKDSUn8CWWOBHQ/exec';
-        const response = await fetch(`${gasUrl}?name=${encodeURIComponent(input)}`);
-        const data = await response.json();
+        const response = await fetch(gasUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message }),
+        });
 
-        if (data.result === 1 || data.result === 2) {
-          resultDiv.textContent = `Result: ${data.result}`;
-        } else {
-          resultDiv.textContent = 'Invalid input.';
-        }
+        const data = await response.json();
+        responseDiv.textContent = `Response from backend: ${data.response}`;
       } catch (error) {
-        resultDiv.textContent = 'An error occurred. Please try again.';
+        responseDiv.textContent = 'An error occurred. Please try again.';
         console.error(error);
       }
     }
