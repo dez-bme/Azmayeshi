@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Author Search App</title>
+  <title>Send Message to Backend</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -13,116 +13,52 @@
       padding: 10px;
       font-size: 16px;
     }
-    #results, #articles {
+    #response {
       margin-top: 20px;
-    }
-    .author {
-      cursor: pointer;
-      color: blue;
-      text-decoration: underline;
-      margin: 5px 0;
-    }
-    .article {
-      margin: 10px 0;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      font-size: 18px;
+      color: green;
     }
   </style>
 </head>
 <body>
-  <h1>Author Search App</h1>
-  <input type="text" id="authorInput" placeholder="Enter author name">
-  <button onclick="searchAuthor()">Search</button>
-  <div id="results"></div>
-  <div id="articles"></div>
+  <h1>Send Message to Backend</h1>
+  <input type="text" id="messageInput" placeholder="Enter a message">
+  <select id="actionInput">
+    <option value="hello">Say Hello</option>
+    <option value="BYE">Say Bye</option>
+  </select>
+  <button onclick="sendMessage()">Send</button>
+  <div id="response"></div>
 
   <script>
-    function searchAuthor() {
-      const authorName = document.getElementById('authorInput').value.trim();
-      const resultsDiv = document.getElementById('results');
-      const articlesDiv = document.getElementById('articles');
+    function sendMessage() {
+      const message = document.getElementById('messageInput').value.trim();
+      const action = document.getElementById('actionInput').value;
+      const responseDiv = document.getElementById('response');
 
-      if (!authorName) {
-        resultsDiv.textContent = 'Please enter an author name.';
+      if (!message) {
+        responseDiv.textContent = 'Please enter a message.';
         return;
       }
 
-      // Clear previous results
-      resultsDiv.innerHTML = '';
-      articlesDiv.innerHTML = '';
-
       // Replace with your Google Apps Script deployment URL
       const gasUrl = 'https://script.google.com/macros/s/AKfycbxW4cHZ3BNtckE2nF2EPIARyygUihDKMlNykgSfDKQSOhDr9ZEJLJrJqfUYRk6BjRk1/exec';
 
-      // Send the author name and action as plain text
-      const requestBody = `action=search&authorName=${encodeURIComponent(authorName)}`;
+      // Send a POST request to the backend with plain text
+      const requestBody = `message=${encodeURIComponent(message)}&action=${encodeURIComponent(action)}`;
 
       fetch(gasUrl, {
         method: 'POST',
-        body: requestBody, // Send the data as plain text
+        body: requestBody, // Send the message and action as plain text
       })
         .then(response => response.text()) // Parse the response as plain text
         .then(data => {
-          // Parse the plain text response as JSON
-          const responseData = JSON.parse(data);
-
-          if (responseData.authors && responseData.authors.length > 0) {
-            // Display the list of authors
-            responseData.authors.forEach(author => {
-              const authorElement = document.createElement('div');
-              authorElement.className = 'author';
-              authorElement.textContent = author;
-              authorElement.onclick = () => fetchArticles(author);
-              resultsDiv.appendChild(authorElement);
-            });
-          } else {
-            resultsDiv.textContent = 'No authors found.';
-          }
+          // Display the response from the backend
+          responseDiv.textContent = `Response from backend: ${data}`;
         })
         .catch(error => {
-          resultsDiv.textContent = 'An error occurred. Please try again.';
-          console.error(error);
-        });
-    }
-
-    function fetchArticles(author) {
-      const articlesDiv = document.getElementById('articles');
-
-      // Replace with your Google Apps Script deployment URL
-      const gasUrl = 'https://script.google.com/macros/s/AKfycbxW4cHZ3BNtckE2nF2EPIARyygUihDKMlNykgSfDKQSOhDr9ZEJLJrJqfUYRk6BjRk1/exec';
-
-      // Send the author name and action as plain text
-      const requestBody = `action=fetchArticles&authorName=${encodeURIComponent(author)}`;
-
-      fetch(gasUrl, {
-        method: 'POST',
-        body: requestBody, // Send the data as plain text
-      })
-        .then(response => response.text()) // Parse the response as plain text
-        .then(data => {
-          // Parse the plain text response as JSON
-          const responseData = JSON.parse(data);
-
-          if (responseData.articles && responseData.articles.length > 0) {
-            // Display the articles
-            articlesDiv.innerHTML = '<h2>Articles:</h2>';
-            responseData.articles.forEach(article => {
-              const articleElement = document.createElement('div');
-              articleElement.className = 'article';
-              articleElement.innerHTML = `
-                <strong>Title:</strong> ${article.title}<br>
-                <strong>Upload Date:</strong> ${article.uploadDate}<br>
-                <strong>Download Link:</strong> <a href="${article.downloadLink}" target="_blank">Download</a>
-              `;
-              articlesDiv.appendChild(articleElement);
-            });
-          } else {
-            articlesDiv.textContent = 'No articles found for this author.';
-          }
-        })
-        .catch(error => {
-          articlesDiv.textContent = 'An error occurred. Please try again.';
+          // Handle errors
+          responseDiv.textContent = 'An error occurred. Please try again.';
           console.error(error);
         });
     }
