@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,7 +56,7 @@
       // Replace with your Google Apps Script deployment URL
       const gasUrl = 'https://script.google.com/macros/s/AKfycbxW4cHZ3BNtckE2nF2EPIARyygUihDKMlNykgSfDKQSOhDr9ZEJLJrJqfUYRk6BjRk1/exec';
 
-      // Send the author name to the backend
+      // Send the author name to the backend as plain text
       fetch(`${gasUrl}?action=search&author=${encodeURIComponent(authorName)}`)
         .then(response => response.json())
         .then(data => {
@@ -113,3 +114,5 @@
   </script>
 </body>
 </html>
+
+     
