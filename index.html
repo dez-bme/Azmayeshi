@@ -27,7 +27,7 @@
   <div id="response"></div>
 
   <script>
-    async function sendMessage() {
+    function sendMessage() {
       const message = document.getElementById('messageInput').value.trim();
       const responseDiv = document.getElementById('response');
 
@@ -36,23 +36,24 @@
         return;
       }
 
-      try {
-        // Replace with your Google Apps Script deployment URL
-        const gasUrl = 'https://script.google.com/macros/s/AKfycbxQkKzjHG_dFW2pGS_rq5I2DRt9mV-VvxAIv02gOd4a4MDSom2EGNnrMKDSUn8CWWOBHQ/exec';
-        const response = await fetch(gasUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ message }),
-        });
+      // Replace with your Google Apps Script deployment URL
+      const gasUrl = 'https://script.google.com/macros/s/AKfycby0nvyIM9rlh_sjRgWVIsaCYrKCYPAeRvoICJn0AhYeArWQWmVannVZ9kdoWJ-ksfA0-g/exec';
 
-        const data = await response.json();
-        responseDiv.textContent = `Response from backend: ${data.response}`;
-      } catch (error) {
-        responseDiv.textContent = 'An error occurred. Please try again.';
-        console.error(error);
-      }
+      // Send a POST request to the backend with plain text
+      fetch(gasUrl, {
+        method: 'POST',
+        body: message, // Send the message as plain text
+      })
+        .then(response => response.text()) // Parse the response as plain text
+        .then(data => {
+          // Display the response from the backend
+          responseDiv.textContent = `Response from backend: ${data}`;
+        })
+        .catch(error => {
+          // Handle errors
+          responseDiv.textContent = 'An error occurred. Please try again.';
+          console.error(error);
+        });
     }
   </script>
 </body>
