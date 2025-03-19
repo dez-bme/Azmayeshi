@@ -98,6 +98,7 @@
 
     function selectAuthor(selectedAuthor) {
       const responseDiv = document.getElementById('response');
+      responseDiv.textContent = '';
 
       // Send a POST request to the backend for ARTICLESEARCH
       const requestBody = `action:ARTICLESEARCH|message:${selectedAuthor}`;
@@ -110,6 +111,8 @@
         .then(data => {
           if (data.result && data.result.length > 0) {
             // Display article results
+            responseDiv.textContent='جزوات استاد '+ selectedAuthor + ':'; 
+            responseDiv.style.color='green';
             const articleList = document.getElementById('articleList');
             articleList.innerHTML = data.result.map(article => `
               <li>
@@ -120,13 +123,15 @@
             `).join('');
             
             document.getElementById('articleResults').style.display = 'block';
-            responseDiv.textContent = '';
+            //responseDiv.textContent = '';
           } else {
-            responseDiv.textContent = 'No articles found for this author.';
+            responseDiv.textContent='متاسفانه برای استاد '+ selectedAuthor + 'جزوه ای یافت نشد!'; 
+            responseDiv.style.color='red';
           }
         })
         .catch(error => {
-          responseDiv.textContent = 'An error occurred. Please try again.';
+          responseDiv.textContent = 'خطا در نمایش جزوات!';
+          responseDiv.style.color='red';
           console.error('Error:', error);
         });
     }
