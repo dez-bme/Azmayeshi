@@ -21,7 +21,7 @@
   </style>
 </head>
 <body>
-  <h1>Send Message to Mackend</h1>
+  <h1>Send Message to Backend</h1>
   <input type="text" id="messageInput" placeholder="Enter a message">
   <select id="actionInput">
     <option value="hello">Say Hello</option>
@@ -46,10 +46,10 @@
 
       // Send a POST request to the backend with plain text
       //const requestBody = `message=${message}&action=${action}`; // Plain text format
-      / Create a URLSearchParams object
+      // Create a URLSearchParams object
       const params = new URLSearchParams();
       params.append('message', message);
-      params.append('action', action');
+      params.append('action', action) ;
 
       fetch(gasUrl, {
         method: 'POST',
