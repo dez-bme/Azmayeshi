@@ -45,7 +45,7 @@
       const gasUrl = 'https://script.google.com/macros/s/AKfycbyCRxrVY2kv8B9nRPVbeJIY0p5zu82cSrk-0vfoPlkjTaJLz3HcldKgNSS5weAabOyy/exec';
 
       // Send a POST request to the backend with plain text
-      const requestBody = message;//`message=${message}&action=${action}`; // Plain text format
+      const requestBody = `message=${message}&action=${action}`; // Plain text format
 
       fetch(gasUrl, {
         method: 'POST',
