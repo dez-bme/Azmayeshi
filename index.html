@@ -48,7 +48,7 @@
   </div>
 
   <div id="articleResults" style="display: none;">
-    <h2>Article Results</h2>
+    <!--h2>Article Results</h2-->
     <ul id="articleList"></ul>
   </div>
 
@@ -91,14 +91,17 @@
           }
         })
         .catch(error => {
-          responseDiv.textContent = 'An error occurred. Please try again.';
+          responseDiv.textContent = '، دوباره تلاش کنید. خطای جستجو';
           console.error('Error:', error);
         });
     }
 
     function selectAuthor(selectedAuthor) {
+      
       const responseDiv = document.getElementById('response');
       responseDiv.textContent = '';
+      document.getElementById('authorButtons').innerHTML='';
+      document.getElementById('authorInput').value='';
 
       // Send a POST request to the backend for ARTICLESEARCH
       const requestBody = `action:ARTICLESEARCH|message:${selectedAuthor}`;
@@ -130,7 +133,7 @@
           }
         })
         .catch(error => {
-          responseDiv.textContent = 'خطا در نمایش جزوات!';
+          responseDiv.textContent = 'خطا در نمایش جزوات، دوباره تلاش کنید!';
           responseDiv.style.color='red';
           console.error('Error:', error);
         });
