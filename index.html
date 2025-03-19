@@ -21,7 +21,7 @@
   </style>
 </head>
 <body>
-  <h1>Send Message to Mackend</h1>
+  <h1>Send Message to Backend</h1>
   <input type="text" id="messageInput" placeholder="Enter a message">
 
   <button onclick="sendMessage()">Send</button>
@@ -48,7 +48,7 @@
       //params.append('message', message);
      // params.append('action', action) ;
       // Construct the plain text body in a custom format
-      const action='hello';
+      const action='BYE';
       const requestBody = `action:${action}|message:${message}`;
 
       fetch(gasUrl, {
