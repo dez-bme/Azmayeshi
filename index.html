@@ -77,21 +77,21 @@
     const gasUrl = 'https://script.google.com/macros/s/AKfycbxQPk-Xi5_qXIirKy5qE_gsJWgOMw1yb5fo0Nv-GtFQ-uebxXYDfieSeWERAWigXrr8fw/exec';
     
     function searchAuthor() {
+      
       const authorName = document.getElementById('authorInput').value.trim();
       const responseDiv = document.getElementById('response');
       const authorButtonsDiv = document.getElementById('authorButtons');
+       if (!authorName) {
+        responseDiv.textContent = 'لطفا نام استاد را وارد کنید!';
+        responseDiv.style.color='red';        
+        return;
+      }
+
       responseDiv.textContent = 'در حال جستجوی استاد ...';
       responseDiv.style.color='blue';
       responseDiv.appendChild(spinner);
       authorButtonsDiv.innerHTML='';
       document.getElementById('articleList').innerHTML='';     
-      
-      if (!authorName) {
-       responseDiv.removeChild(spinner);
-        responseDiv.textContent = 'لطفا نام استاد را وارد کنید!';
-        responseDiv.style.color='red';        
-        return;
-      }
 
       // Send a POST request to the backend for AUTHORSEARCH
       const requestBody = `action:AUTHORSEARCH|message:${authorName}`;
@@ -119,8 +119,7 @@
             responseDiv.style.color='red';
           }
         })
-        .catch(error => {
-          responseDiv.removeChild(spinner);
+        .catch(error => {          
           responseDiv.textContent = '، دوباره تلاش کنید. خطای جستجو';
           console.error('Error:', error);
         });
@@ -169,7 +168,6 @@
           }
         })
         .catch(error => {
-          responseDiv.removeChild(spinner);
           responseDiv.textContent = 'خطا در نمایش جزوات، دوباره تلاش کنید!';
           responseDiv.style.color='red';
           console.error('Error:', error);
