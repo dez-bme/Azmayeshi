@@ -9,7 +9,7 @@
       font-family: Arial, sans-serif;
       margin: 50px;
     }
-    input, button, select {
+    input, button {
       padding: 10px;
       font-size: 16px;
       margin: 5px;
@@ -22,6 +22,13 @@
     #searchResults {
       margin-top: 20px;
     }
+    .author-button {
+      display: block;
+      margin: 5px 0;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -31,14 +38,9 @@
 
   <div id="searchResults" style="display: none;">
     <h2>Search Results</h2>
-    <select id="authorList1" onchange="selectAuthor()"></select>
+    <div id="authorButtons"></div>
   </div>
-  
-  <!-- Author Results -->
-  <div id="authorList"></div>
-  <!-- Article Results -->
-  <div id="articleResults"></div>
-  
+
   <div id="articleResults" style="display: none;">
     <h2>Article Results</h2>
     <ul id="articleList"></ul>
@@ -68,11 +70,12 @@
         .then(response => response.json())
         .then(data => {
           if (data.result && data.result.length > 0) {
-            // Display search results
-            const authorList = document.getElementById('authorList');
-            //authorList.innerHTML = data.result.map(author => `<option value="${author}">${author}</option>`).join('');
-            //document.getElementById('searchResults').style.display = 'block';
-            authorList.innerHTML = data.result.map(author => `<button onclick="selectAuthor('${author}')">${author}</button>`).join("");
+            // Display search results as buttons
+            const authorButtons = document.getElementById('authorButtons');
+            authorButtons.innerHTML = data.result.map(author => `
+              <button class="author-button" onclick="selectAuthor('${author}')">${author}</button>
+            `).join('');
+            document.getElementById('searchResults').style.display = 'block';
             responseDiv.textContent = '';
           } else {
             responseDiv.textContent = 'No authors found.';
@@ -85,7 +88,6 @@
     }
 
     function selectAuthor(selectedAuthor) {
-      //const selectedAuthor = document.getElementById('authorList').value;
       const responseDiv = document.getElementById('response');
 
       // Send a POST request to the backend for ARTICLESEARCH
