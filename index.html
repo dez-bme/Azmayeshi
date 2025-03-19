@@ -40,6 +40,8 @@
   <input type="text" id="authorInput" placeholder="نام استاد را وارد کن *">
   <button onclick="searchAuthor()">جستجو کن!</button>
 
+  <div id="response"></div>
+  
   <div id="searchResults" style="display: none;">
     <h2>Search Results</h2>
     <div id="authorButtons"></div>
@@ -49,8 +51,6 @@
     <h2>Article Results</h2>
     <ul id="articleList"></ul>
   </div>
-
-  <div id="response"></div>
 
   <script>
     const gasUrl = 'https://script.google.com/macros/s/AKfycbxQPk-Xi5_qXIirKy5qE_gsJWgOMw1yb5fo0Nv-GtFQ-uebxXYDfieSeWERAWigXrr8fw/exec';
@@ -82,7 +82,8 @@
             document.getElementById('searchResults').style.display = 'block';
             responseDiv.textContent = '';
           } else {
-            responseDiv.textContent = 'No authors found.';
+            responseDiv.textContent = 'استاد '+ authorName + '  یافت نشد!' ; 
+            responseDiv.style.color='red';
           }
         })
         .catch(error => {
