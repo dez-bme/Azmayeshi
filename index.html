@@ -23,11 +23,15 @@
       margin-top: 20px;
     }
     .author-button {
-      display: block;
-      margin: 5px 0;
+      display: inline-block; /* Display buttons inline */
+      margin: 5px;
       padding: 10px;
       font-size: 16px;
       cursor: pointer;
+    }
+    #authorButtons {
+      white-space: nowrap; /* Prevent wrapping to the next line */
+      overflow-x: auto; /* Add horizontal scroll if needed */
     }
   </style>
 </head>
@@ -96,29 +100,3 @@
       fetch(gasUrl, {
         method: 'POST',
         body: requestBody,
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.result && data.result.length > 0) {
-            // Display article results
-            const articleList = document.getElementById('articleList');
-            articleList.innerHTML = data.result.map(article => `
-              <li>
-                <strong>${article.title}</strong> (${article.date})<br>
-                <a href="${article.link}" target="_blank">Download</a>
-              </li>
-            `).join('');
-            document.getElementById('articleResults').style.display = 'block';
-            responseDiv.textContent = '';
-          } else {
-            responseDiv.textContent = 'No articles found for this author.';
-          }
-        })
-        .catch(error => {
-          responseDiv.textContent = 'An error occurred. Please try again.';
-          console.error('Error:', error);
-        });
-    }
-  </script>
-</body>
-</html>
