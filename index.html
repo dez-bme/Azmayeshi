@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Send Message to Backend</title>
+  <title>Send Message to MYBackend</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -45,7 +45,7 @@
       const gasUrl = 'https://script.google.com/macros/s/AKfycbxW4cHZ3BNtckE2nF2EPIARyygUihDKMlNykgSfDKQSOhDr9ZEJLJrJqfUYRk6BjRk1/exec';
 
       // Send a POST request to the backend with plain text
-      const requestBody = ${message};//`message=${message}&action=${action}`; // Plain text format
+      const requestBody = message;//`message=${message}&action=${action}`; // Plain text format
 
       fetch(gasUrl, {
         method: 'POST',
