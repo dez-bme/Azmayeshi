@@ -119,8 +119,8 @@
             // Display article results
             responseDiv.textContent='جزوات استاد '+ selectedAuthor + ':'; 
             responseDiv.style.color='green';
-            const articleList = document.getElementById('articleList');
-            articleList.innerHTML = data.result.map(article => `
+            const articleListDiv = document.getElementById('articleList');
+            articleListDiv.innerHTML = data.result.map(article => `
               <li>
                 <strong>${article.title}</strong> 
                 (${article.date.split('T')[0]}) <!-- Extract date only -->
