@@ -3,70 +3,110 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Send Message to Backend</title>
+  <title>Author and Article Search</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 50px;
     }
-    input, button {
+    input, button, select {
       padding: 10px;
       font-size: 16px;
+      margin: 5px;
     }
     #response {
       margin-top: 20px;
       font-size: 18px;
       color: green;
     }
+    #searchResults {
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
-  <h1>Send Message to Backend</h1>
-  <input type="text" id="messageInput" placeholder="Enter a message">
+  <h1>Author and Article Search</h1>
+  <input type="text" id="authorInput" placeholder="Enter author name">
+  <button onclick="searchAuthor()">Search Author</button>
 
-  <button onclick="sendMessage()">Send</button>
+  <div id="searchResults" style="display: none;">
+    <h2>Search Results</h2>
+    <select id="authorList" onchange="selectAuthor()"></select>
+  </div>
+
+  <div id="articleResults" style="display: none;">
+    <h2>Article Results</h2>
+    <ul id="articleList"></ul>
+  </div>
+
   <div id="response"></div>
 
   <script>
-    function sendMessage() {
-      const message = document.getElementById('messageInput').value.trim();
-      //const action = document.getElementById('actionInput').value;
+    const gasUrl = 'https://script.google.com/macros/s/AKfycbx-PaBZGcD2tAWWRHB8M2vyHRGahdWx6cuQ_c9dtfYKLAf5jckiZGKaeqcIBdgJKiNE-w/exec';
+
+    function searchAuthor() {
+      const authorName = document.getElementById('authorInput').value.trim();
       const responseDiv = document.getElementById('response');
 
-      if (!message) {
-        responseDiv.textContent = 'Please enter a message.';
+      if (!authorName) {
+        responseDiv.textContent = 'Please enter an author name.';
         return;
       }
 
-      // Replace with your Google Apps Script deployment URL
-      const gasUrl = 'https://script.google.com/macros/s/AKfycbwX0w4pXGBhuXTGJIHQmoMdjJ8TDDittlFVc9OiEGD8dkOSxl8T5_N0aO8c5hIC_KwX/exec';
-
-      // Send a POST request to the backend with plain text
-      //const requestBody = `message=${message}&action=${action}`; // Plain text format
-      // Create a URLSearchParams object
-      //const params = new URLSearchParams();
-      //params.append('message', message);
-     // params.append('action', action) ;
-      // Construct the plain text body in a custom format
-      const action='BYE';
-      const requestBody = `action:${action}|message:${message}`;
+      // Send a POST request to the backend for AUTHORSEARCH
+      const requestBody = `action:AUTHORSEARCH|message:${authorName}`;
 
       fetch(gasUrl, {
         method: 'POST',
-        body: requestBody, // Send the message and action as plain text
+        body: requestBody,
       })
-        .then(response => {
-         // if (!response.ok) {
-           // throw new Error('Network response was not ok');
-          //}
-          return response.text(); // Parse the response as plain text
-        })
+        .then(response => response.json())
         .then(data => {
-          // Display the response from the backend
-          responseDiv.textContent = `Response from backend: ${data}`;
+          if (data.result && data.result.length > 0) {
+            // Display search results
+            const authorList = document.getElementById('authorList');
+            authorList.innerHTML = data.result.map(author => `<option value="${author}">${author}</option>`).join('');
+            document.getElementById('searchResults').style.display = 'block';
+            responseDiv.textContent = '';
+          } else {
+            responseDiv.textContent = 'No authors found.';
+          }
         })
         .catch(error => {
-          // Handle errors
+          responseDiv.textContent = 'An error occurred. Please try again.';
+          console.error('Error:', error);
+        });
+    }
+
+    function selectAuthor() {
+      const selectedAuthor = document.getElementById('authorList').value;
+      const responseDiv = document.getElementById('response');
+
+      // Send a POST request to the backend for ARTICLESEARCH
+      const requestBody = `action:ARTICLESEARCH|message:${selectedAuthor}`;
+
+      fetch(gasUrl, {
+        method: 'POST',
+        body: requestBody,
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.result && data.result.length > 0) {
+            // Display article results
+            const articleList = document.getElementById('articleList');
+            articleList.innerHTML = data.result.map(article => `
+              <li>
+                <strong>${article.title}</strong> (${article.date})<br>
+                <a href="${article.link}" target="_blank">Download</a>
+              </li>
+            `).join('');
+            document.getElementById('articleResults').style.display = 'block';
+            responseDiv.textContent = '';
+          } else {
+            responseDiv.textContent = 'No articles found for this author.';
+          }
+        })
+        .catch(error => {
           responseDiv.textContent = 'An error occurred. Please try again.';
           console.error('Error:', error);
         });
