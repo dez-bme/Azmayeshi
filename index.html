@@ -59,6 +59,8 @@
       const authorName = document.getElementById('authorInput').value.trim();
       const responseDiv = document.getElementById('response');
       responseDiv.textContent = '';
+      document.getElementById('authorButtons').innerHTML='';
+      document.getElementById('articleList').value='';
       
       if (!authorName) {
         responseDiv.textContent = 'لطفا نام استاد را وارد کنید!';
