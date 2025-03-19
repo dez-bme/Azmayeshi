@@ -43,7 +43,7 @@
   <div id="response"></div>
   
   <div id="searchResults" style="display: none;">
-    <h2>Search Results</h2>
+    <!--h2>Search Results</h2-->
     <div id="authorButtons"></div>
   </div>
 
@@ -58,7 +58,8 @@
     function searchAuthor() {
       const authorName = document.getElementById('authorInput').value.trim();
       const responseDiv = document.getElementById('response');
-
+      responseDiv.textContent = '';
+      
       if (!authorName) {
         responseDiv.textContent = 'لطفا نام استاد را وارد کنید!';
         responseDiv.style.color='red';
@@ -76,6 +77,8 @@
         .then(data => {
           if (data.result && data.result.length > 0) {
             // Display search results as buttons
+            responseDiv.textContent = 'روی نام استاد کلیک کنید!';
+            responseDiv.style.color='green';
             const authorButtons = document.getElementById('authorButtons');
             authorButtons.innerHTML = data.result.map(author => `
               <button class="author-button" onclick="selectAuthor('${author}')">${author}</button>
