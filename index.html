@@ -25,7 +25,7 @@
   </style>
 </head>
 <body>
-  <h1>Author and mArticle Search</h1>
+  <h1>Author and Article Search</h1>
   <input type="text" id="authorInput" placeholder="Enter author name">
   <button onclick="searchAuthor()">Search Author</button>
 
@@ -65,8 +65,9 @@
           if (data.result && data.result.length > 0) {
             // Display search results
             const authorList = document.getElementById('authorList');
-            authorList.innerHTML = data.result.map(author => `<option value="${author}">${author}</option>`).join('');
-            document.getElementById('searchResults').style.display = 'block';
+            //authorList.innerHTML = data.result.map(author => `<option value="${author}">${author}</option>`).join('');
+            //document.getElementById('searchResults').style.display = 'block';
+            authorList.innerHTML = data.result.map(author => `<button onclick="selectAuthor('${author}')">${author}</button>`).join("");
             responseDiv.textContent = '';
           } else {
             responseDiv.textContent = 'No authors found.';
