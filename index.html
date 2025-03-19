@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Author and Article Search</title>
+  <title>Author and mArticle Search</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -53,7 +53,7 @@
   <div id="response"></div>
 
   <script>
-    const gasUrl = 'https://script.google.com/macros/s/AKfycbxQPk-Xi5_qXIirKy5qE_gsJWgOMw1yb5fo0Nv-GtFQ-uebxXYDfieSeWERAWigXrr8fw/exec';
+    const gasUrl = 'https://script.google.com/macros/s/AKfycbwX0w4pXGBhuXTGJIHQmoMdjJ8TDDittlFVc9OiEGD8dkOSxl8T5_N0aO8c5hIC_KwX/exec';
 
     function searchAuthor() {
       const authorName = document.getElementById('authorInput').value.trim();
@@ -100,3 +100,29 @@
       fetch(gasUrl, {
         method: 'POST',
         body: requestBody,
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.result && data.result.length > 0) {
+            // Display article results
+            const articleList = document.getElementById('articleList');
+            articleList.innerHTML = data.result.map(article => `
+              <li>
+                <strong>${article.title}</strong> (${article.date})<br>
+                <a href="${article.link}" target="_blank">Download</a>
+              </li>
+            `).join('');
+            document.getElementById('articleResults').style.display = 'block';
+            responseDiv.textContent = '';
+          } else {
+            responseDiv.textContent = 'No articles found for this author.';
+          }
+        })
+        .catch(error => {
+          responseDiv.textContent = 'An error occurred. Please try again.';
+          console.error('Error:', error);
+        });
+    }
+  </script>
+</body>
+</html>
