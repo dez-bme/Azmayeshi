@@ -58,8 +58,10 @@
     function searchAuthor() {
       const authorName = document.getElementById('authorInput').value.trim();
       const responseDiv = document.getElementById('response');
-      responseDiv.textContent = '';
-      document.getElementById('authorButtons').innerHTML='';
+      const authorButtonsDiv = document.getElementById('authorButtons');
+      responseDiv.textContent = 'در حال جستجوی استاد ...';
+      responseDiv.style.color='blue';
+      authorButtonsDiv.innerHTML='';
       document.getElementById('articleList').innerHTML='';
       
       if (!authorName) {
@@ -81,8 +83,8 @@
             // Display search results as buttons
             responseDiv.textContent = 'روی نام استاد کلیک کنید!';
             responseDiv.style.color='green';
-            const authorButtons = document.getElementById('authorButtons');
-            authorButtons.innerHTML = data.result.map(author => `
+            
+            authorButtonsDiv.innerHTML = data.result.map(author => `
               <button class="author-button" onclick="selectAuthor('${author}')">${author}</button>
             `).join('');
             document.getElementById('searchResults').style.display = 'block';
@@ -101,10 +103,12 @@
     function selectAuthor(selectedAuthor) {
       
       const responseDiv = document.getElementById('response');
-      responseDiv.textContent = '';
+      const articleListDiv = document.getElementById('articleList');      
+      responseDiv.textContent = 'در حال جستجوی استاد ...';
+      responseDiv.style.color='blue';
       document.getElementById('authorButtons').innerHTML='';
       document.getElementById('authorInput').value='';
-      document.getElementById('articleList').innerHTML='';
+      articleListDiv.innerHTML='';
 
       // Send a POST request to the backend for ARTICLESEARCH
       const requestBody = `action:ARTICLESEARCH|message:${selectedAuthor}`;
@@ -119,7 +123,7 @@
             // Display article results
             responseDiv.textContent='جزوات استاد '+ selectedAuthor + ':'; 
             responseDiv.style.color='green';
-            const articleListDiv = document.getElementById('articleList');
+            
             articleListDiv.innerHTML = data.result.map(article => `
               <li>
                 <strong>${article.title}</strong> 
