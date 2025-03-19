@@ -54,9 +54,9 @@
       fetch(gasUrl, {
         method: 'POST',
         body: params, // Send the message and action as plain text
-        //headers: {
-        //  'Content-Type': 'text/plain', // Set the content type to plain text
-        //},
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded', // Required for URL-encoded data
+        },
       })
         .then(response => {
          // if (!response.ok) {
