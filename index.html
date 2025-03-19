@@ -33,8 +33,25 @@
       white-space: nowrap; /* Prevent wrapping to the next line */
       overflow-x: auto; /* Add horizontal scroll if needed */
     }
+
+      .spinner {
+      border: 4px solid #f3f3f3; /* Light grey */
+      border-top: 4px solid #3498db; /* Blue */
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      margin-left: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
+  
 <body>
   <h3>جستجوی جزوات بر اساس نام استاد</h3>
   <input type="text" id="authorInput" placeholder="نام استاد را وارد کن *">
@@ -53,20 +70,26 @@
   </div>
 
   <script>
+    // Add a spinner for visual feedback
+    const spinner = document.createElement('div');
+    spinner.className = 'spinner';
+    
     const gasUrl = 'https://script.google.com/macros/s/AKfycbxQPk-Xi5_qXIirKy5qE_gsJWgOMw1yb5fo0Nv-GtFQ-uebxXYDfieSeWERAWigXrr8fw/exec';
-
+    
     function searchAuthor() {
       const authorName = document.getElementById('authorInput').value.trim();
       const responseDiv = document.getElementById('response');
       const authorButtonsDiv = document.getElementById('authorButtons');
       responseDiv.textContent = 'در حال جستجوی استاد ...';
       responseDiv.style.color='blue';
+      responseDiv.appendChild(spinner);
       authorButtonsDiv.innerHTML='';
-      document.getElementById('articleList').innerHTML='';
+      document.getElementById('articleList').innerHTML='';     
       
       if (!authorName) {
+       responseDiv.removeChild(spinner);
         responseDiv.textContent = 'لطفا نام استاد را وارد کنید!';
-        responseDiv.style.color='red';
+        responseDiv.style.color='red';        
         return;
       }
 
@@ -81,8 +104,9 @@
         .then(data => {
           if (data.result && data.result.length > 0) {
             // Display search results as buttons
+            responseDiv.removeChild(spinner);
             responseDiv.textContent = 'روی نام استاد کلیک کنید!';
-            responseDiv.style.color='green';
+            responseDiv.style.color='green';            
             
             authorButtonsDiv.innerHTML = data.result.map(author => `
               <button class="author-button" onclick="selectAuthor('${author}')">${author}</button>
@@ -90,11 +114,13 @@
             document.getElementById('searchResults').style.display = 'block';
             //responseDiv.textContent = '';
           } else {
+            responseDiv.removeChild(spinner);
             responseDiv.textContent = 'استاد '+ authorName + '  یافت نشد!' ; 
             responseDiv.style.color='red';
           }
         })
         .catch(error => {
+          responseDiv.removeChild(spinner);
           responseDiv.textContent = '، دوباره تلاش کنید. خطای جستجو';
           console.error('Error:', error);
         });
@@ -106,6 +132,7 @@
       const articleListDiv = document.getElementById('articleList');      
       responseDiv.textContent = 'در حال جستجوی جزوات ...';
       responseDiv.style.color='blue';
+      responseDiv.appendChild(spinner);
       document.getElementById('authorButtons').innerHTML='';
       document.getElementById('authorInput').value='';
       articleListDiv.innerHTML='';
@@ -120,6 +147,7 @@
         .then(response => response.json())
         .then(data => {
           if (data.result && data.result.length > 0) {
+            responseDiv.removeChild(spinner);
             // Display article results
             responseDiv.textContent='جزوات استاد '+ selectedAuthor + ':'; 
             responseDiv.style.color='green';
@@ -135,11 +163,13 @@
             document.getElementById('articleResults').style.display = 'block';
             //responseDiv.textContent = '';
           } else {
+            responseDiv.removeChild(spinner);
             responseDiv.textContent='متاسفانه برای استاد '+ selectedAuthor + 'جزوه ای یافت نشد!'; 
             responseDiv.style.color='red';
           }
         })
         .catch(error => {
+          responseDiv.removeChild(spinner);
           responseDiv.textContent = 'خطا در نمایش جزوات، دوباره تلاش کنید!';
           responseDiv.style.color='red';
           console.error('Error:', error);
