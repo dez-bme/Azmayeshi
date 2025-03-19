@@ -21,7 +21,7 @@
   </style>
 </head>
 <body>
-  <h1>Send Message to Backend</h1>
+  <h1>Send Message to Mackend</h1>
   <input type="text" id="messageInput" placeholder="Enter a message">
   <select id="actionInput">
     <option value="hello">Say Hello</option>
@@ -45,11 +45,15 @@
       const gasUrl = 'https://script.google.com/macros/s/AKfycbxU-gxeOpVg2M5k__gfpR61O8wdd6rAEoDLviaQCf3bZmjFz3zjaa7utIHdW9tP1c17/exec';
 
       // Send a POST request to the backend with plain text
-      const requestBody = `message=${message}&action=${action}`; // Plain text format
+      //const requestBody = `message=${message}&action=${action}`; // Plain text format
+      / Create a URLSearchParams object
+      const params = new URLSearchParams();
+      params.append('message', message);
+      params.append('action', action');
 
       fetch(gasUrl, {
         method: 'POST',
-        body: requestBody, // Send the message and action as plain text
+        body: params, // Send the message and action as plain text
         //headers: {
         //  'Content-Type': 'text/plain', // Set the content type to plain text
         //},
