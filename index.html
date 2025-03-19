@@ -60,7 +60,7 @@
       const responseDiv = document.getElementById('response');
       responseDiv.textContent = '';
       document.getElementById('authorButtons').innerHTML='';
-      document.getElementById('articleList').value='';
+      document.getElementById('articleList').innerHTML='';
       
       if (!authorName) {
         responseDiv.textContent = 'لطفا نام استاد را وارد کنید!';
@@ -104,6 +104,7 @@
       responseDiv.textContent = '';
       document.getElementById('authorButtons').innerHTML='';
       document.getElementById('authorInput').value='';
+      document.getElementById('articleList').innerHTML='';
 
       // Send a POST request to the backend for ARTICLESEARCH
       const requestBody = `action:ARTICLESEARCH|message:${selectedAuthor}`;
