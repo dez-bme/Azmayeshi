@@ -21,7 +21,7 @@
   </style>
 </head>
 <body>
-  <h1>Send Message to Mackend</h1>
+  <h1>Send Message to Backend</h1>
   <input type="text" id="messageInput" placeholder="Enter a message">
   <select id="actionInput">
     <option value="hello">Say Hello</option>
@@ -42,7 +42,7 @@
       }
 
       // Replace with your Google Apps Script deployment URL
-      const gasUrl = 'https://script.google.com/macros/s/AKfycbyCRxrVY2kv8B9nRPVbeJIY0p5zu82cSrk-0vfoPlkjTaJLz3HcldKgNSS5weAabOyy/exec';
+      const gasUrl = 'https://script.google.com/macros/s/AKfycbxU-gxeOpVg2M5k__gfpR61O8wdd6rAEoDLviaQCf3bZmjFz3zjaa7utIHdW9tP1c17/exec';
 
       // Send a POST request to the backend with plain text
       const requestBody = `message=${message}&action=${action}`; // Plain text format
