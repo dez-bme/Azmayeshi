@@ -21,19 +21,19 @@
   </style>
 </head>
 <body>
-  <h1>Send Message to Backend</h1>
+  <h1>Send Message to Mackend</h1>
   <input type="text" id="messageInput" placeholder="Enter a message">
-  <select id="actionInput">
-    <option value="hello">Say Hello</option>
-    <option value="BYE">Say Bye</option>
-  </select>
+  //<select id="actionInput">
+    //<option value="hello">Say Hello</option>
+    //<option value="BYE">Say Bye</option>
+ // </select>
   <button onclick="sendMessage()">Send</button>
   <div id="response"></div>
 
   <script>
     function sendMessage() {
       const message = document.getElementById('messageInput').value.trim();
-      const action = document.getElementById('actionInput').value;
+      //const action = document.getElementById('actionInput').value;
       const responseDiv = document.getElementById('response');
 
       if (!message) {
@@ -51,6 +51,7 @@
       //params.append('message', message);
      // params.append('action', action) ;
       // Construct the plain text body in a custom format
+      const action='hello';
       const requestBody = `action:${action}|message:${message}`;
 
       fetch(gasUrl, {
