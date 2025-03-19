@@ -25,7 +25,7 @@
   </style>
 </head>
 <body>
-  <h1>Author and Article Search</h1>
+  <h1>Author and mArticle Search</h1>
   <input type="text" id="authorInput" placeholder="Enter author name">
   <button onclick="searchAuthor()">Search Author</button>
 
@@ -79,8 +79,8 @@
         });
     }
 
-    function selectAuthor() {
-      const selectedAuthor = document.getElementById('authorList').value;
+    function selectAuthor(selectedAuthor) {
+      //const selectedAuthor = document.getElementById('authorList').value;
       const responseDiv = document.getElementById('response');
 
       // Send a POST request to the backend for ARTICLESEARCH
