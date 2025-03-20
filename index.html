@@ -86,7 +86,9 @@
       const authorButtonsDiv = document.getElementById('authorButtons');
        if (!authorName) {
         responseDiv.textContent = 'لطفا نام استاد را وارد کنید!';
-        responseDiv.style.color='red';        
+        responseDiv.style.color='red';    
+         authorButtonsDiv.innerHTML='';
+         document.getElementById('articleList').innerHTML='';
         return;
       }
 
