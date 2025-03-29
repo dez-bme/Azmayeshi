@@ -1,26 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Campus Map - Working Solution</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
+    <title>Campus Map with Google Maps</title>
     <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        #map {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-        }
+        body { margin: 0; padding: 0; }
+        #map { height: 100vh; width: 100%; }
         .controls {
             position: absolute;
             top: 10px;
@@ -30,6 +14,12 @@
             padding: 10px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            width: 250px;
+        }
+        select, button {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
         }
     </style>
 </head>
@@ -49,57 +39,107 @@
             <option value="32.40263293538306,48.3773946762085">Building A</option>
             <option value="32.40458499768988,48.37729275226594">Building B</option>
         </select>
-        <button id="route">Show Route</button>
+        <button id="showRoute">Show Walking Path</button>
+        <div id="distanceInfo"></div>
     </div>
 
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Leaflet Routing Machine -->
-    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <!-- Load Google Maps API without key (limited functionality) -->
+    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap" async defer></script>
     
     <script>
-        // Initialize map - THIS MUST COME AFTER THE MAP DIV EXISTS
-        const map = L.map('map').setView([32.40364294040823, 48.37701380252838], 17);
-
-        // Add tile layer (OpenStreetMap)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        // Add markers for buildings
-        const buildingA = L.marker([32.40263293538306, 48.3773946762085])
-            .addTo(map)
-            .bindPopup("Building A");
+        function initMap() {
+            // Map center coordinates
+            const campusCenter = {lat: 32.40364294040823, lng: 48.37701380252838};
             
-        const buildingB = L.marker([32.40458499768988, 48.37729275226594])
-            .addTo(map)
-            .bindPopup("Building B");
-
-        // Routing control
-        const routingControl = L.Routing.control({
-            waypoints: [],
-            routeWhileDragging: true,
-            show: false,
-            addWaypoints: false,
-            draggableWaypoints: false,
-            fitSelectedRoutes: true,
-            lineOptions: {styles: [{color: '#3388ff', opacity: 0.7, weight: 5}]}
-        }).addTo(map);
-
-        // Handle route selection
-        document.getElementById('route').addEventListener('click', function() {
-            const start = document.getElementById('start').value;
-            const end = document.getElementById('end').value;
+            // Initialize map
+            const map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 17,
+                center: campusCenter,
+                mapTypeId: 'hybrid'
+            });
             
-            if(start && end) {
-                routingControl.setWaypoints([
-                    L.latLng(start.split(',').map(Number)),
-                    L.latLng(end.split(',').map(Number))
-                ]);
-            } else {
-                alert("Please select both start and end points");
-            }
-        });
+            // Define buildings
+            const buildingA = {
+                position: {lat: 32.40263293538306, lng: 48.3773946762085},
+                title: "Building A"
+            };
+            
+            const buildingB = {
+                position: {lat: 32.40458499768988, lng: 48.37729275226594},
+                title: "Building B"
+            };
+            
+            // Add markers
+            new google.maps.Marker({
+                position: buildingA.position,
+                map: map,
+                title: buildingA.title,
+                label: "A"
+            });
+            
+            new google.maps.Marker({
+                position: buildingB.position,
+                map: map,
+                title: buildingB.title,
+                label: "B"
+            });
+            
+            // Define walking path coordinates
+            const walkingPathCoordinates = [
+                buildingA.position,
+                {lat: 32.4028, lng: 48.3773}, // Waypoint 1
+                {lat: 32.4035, lng: 48.3772}, // Waypoint 2
+                {lat: 32.4042, lng: 48.3773}, // Waypoint 3
+                buildingB.position
+            ];
+            
+            // Create walking path
+            const walkingPath = new google.maps.Polyline({
+                path: walkingPathCoordinates,
+                geodesic: true,
+                strokeColor: "#00FF00",
+                strokeOpacity: 1.0,
+                strokeWeight: 5
+            });
+            
+            // Handle route button click
+            document.getElementById('showRoute').addEventListener('click', function() {
+                const start = document.getElementById('start').value;
+                const end = document.getElementById('end').value;
+                
+                if(start && end) {
+                    const startCoords = start.split(',');
+                    const endCoords = end.split(',');
+                    
+                    // Set path endpoints
+                    walkingPath.setPath([
+                        {lat: parseFloat(startCoords[0]), lng: parseFloat(startCoords[1])},
+                        {lat: parseFloat(endCoords[0]), lng: parseFloat(endCoords[1])}
+                    ]);
+                    
+                    // Show the path on map
+                    walkingPath.setMap(map);
+                    
+                    // Calculate distance
+                    const distance = google.maps.geometry.spherical.computeDistanceBetween(
+                        new google.maps.LatLng(startCoords[0], startCoords[1]),
+                        new google.maps.LatLng(endCoords[0], endCoords[1])
+                    ) / 1000; // in km
+                    
+                    document.getElementById('distanceInfo').innerHTML = 
+                        `Walking distance: ${distance.toFixed(2)} km (~${Math.round(distance * 12)} minutes)`;
+                    
+                    // Fit map to path bounds
+                    const bounds = new google.maps.LatLngBounds();
+                    walkingPath.getPath().getArray().forEach(function(latLng) {
+                        bounds.extend(latLng);
+                    });
+                    map.fitBounds(bounds);
+                } else {
+                    alert("Please select both start and end points");
+                }
+            });
+        }
     </script>
 </body>
 </html>
