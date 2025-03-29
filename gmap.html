@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>University Campus Map</title>
+    <title>نقشه دانشگاه</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Tahoma', 'Arial', sans-serif;
+            background-color: #f5f5f5;
         }
         #map-container {
             position: relative;
@@ -35,7 +36,8 @@
         h1 {
             margin: 0 0 15px 0;
             color: #2c3e50;
-            font-size: 1.5em;
+            font-size: 1.3em;
+            text-align: center;
         }
         select, button {
             width: 100%;
@@ -97,105 +99,120 @@
 </head>
 <body>
     <div id="map-container">
-        <!-- Your campus map image -->
-        <img id="campus-map" src="Untitled.png" alt="University Campus Map">
+        <!-- نقشه دانشگاه -->
+        <img id="campus-map" src="Untitled.png" alt="نقشه دانشگاه">
         
-        <!-- Building markers will be added here dynamically -->
-        
-        <!-- Controls panel -->
+        <!-- کنترل‌ها -->
         <div class="controls">
-            <h1>University Campus Navigator</h1>
-            <label for="start">Departure:</label>
+            <h1>نقشه راهنمای دانشگاه</h1>
+            <label for="start">مبدا:</label>
             <select id="start">
-                <option value="">-- Select Building --</option>
-                <option value="mosque">University Mosque</option>
-                <option value="building1">Building 1</option>
-                <option value="building2">Building 2</option>
-                <option value="building3">Building 3</option>
+                <option value="">-- انتخاب ساختمان --</option>
+                <option value="nursing">دانشکده پرستاری و مامایی</option>
+                <option value="technical">دانشکده فنی</option>
+                <option value="parking">پارکینگ</option>
+                <option value="entrance">ورودی اصلی</option>
+                <option value="humanities">دانشکده علوم انسانی</option>
+                <option value="guesthouse">مهمانسرای اساتید</option>
             </select>
             
-            <label for="end">Destination:</label>
+            <label for="end">مقصد:</label>
             <select id="end">
-                <option value="">-- Select Building --</option>
-                <option value="mosque">University Mosque</option>
-                <option value="building1">Building 1</option>
-                <option value="building2">Building 2</option>
-                <option value="building3">Building 3</option>
+                <option value="">-- انتخاب ساختمان --</option>
+                <option value="nursing">دانشکده پرستاری و مامایی</option>
+                <option value="technical">دانشکده فنی</option>
+                <option value="parking">پارکینگ</option>
+                <option value="entrance">ورودی اصلی</option>
+                <option value="humanities">دانشکده علوم انسانی</option>
+                <option value="guesthouse">مهمانسرای اساتید</option>
             </select>
             
-            <button id="show-path">Show Walking Path</button>
-            <button id="reset">Reset</button>
+            <button id="show-path">نمایش مسیر</button>
+            <button id="reset">بازنشانی</button>
             
             <div id="path-info"></div>
         </div>
     </div>
 
     <script>
-        // Define building positions (as percentages of image dimensions)
+        // موقعیت ساختمان‌ها (به صورت درصدی از عرض و ارتفاع تصویر)
         const buildings = {
-            mosque: {
-                name: "University Mosque",
-                x: 25, // % from left
-                y: 40  // % from top
+            nursing: {
+                name: "دانشکده پرستاری و مامایی",
+                x: 25, // % از چپ
+                y: 30  // % از بالا
             },
-            building1: {
-                name: "Building 1",
-                x: 60,
-                y: 30
-            },
-            building2: {
-                name: "Building 2",
+            technical: {
+                name: "دانشکده فنی",
                 x: 70,
+                y: 40
+            },
+            parking: {
+                name: "پارکینگ",
+                x: 60,
+                y: 70
+            },
+            entrance: {
+                name: "ورودی اصلی",
+                x: 40,
+                y: 10
+            },
+            humanities: {
+                name: "دانشکده علوم انسانی",
+                x: 30,
                 y: 60
             },
-            building3: {
-                name: "Building 3",
-                x: 40,
-                y: 70
+            guesthouse: {
+                name: "مهمانسرای اساتید",
+                x: 75,
+                y: 20
             }
         };
 
-        // Define walking paths between buildings
+        // مسیرهای پیاده‌روی بین ساختمان‌ها
         const paths = {
-            mosque_building1: [
-                {x: 25, y: 40}, // Mosque
-                {x: 30, y: 38}, // Waypoint 1
-                {x: 45, y: 33}, // Waypoint 2
-                {x: 60, y: 30}  // Building 1
+            // مسیرهای دانشکده پرستاری
+            nursing_technical: [
+                {x: 25, y: 30}, // پرستاری
+                {x: 35, y: 32},
+                {x: 50, y: 35},
+                {x: 70, y: 40}  // فنی
             ],
-            mosque_building2: [
-                {x: 25, y: 40},
-                {x: 30, y: 45},
-                {x: 50, y: 55},
-                {x: 70, y: 60}
+            nursing_parking: [
+                {x: 25, y: 30},
+                {x: 30, y: 40},
+                {x: 45, y: 55},
+                {x: 60, y: 70}
             ],
-            mosque_building3: [
-                {x: 25, y: 40},
-                {x: 30, y: 50},
-                {x: 35, y: 60},
-                {x: 40, y: 70}
+            // مسیرهای ورودی اصلی
+            entrance_nursing: [
+                {x: 40, y: 10},
+                {x: 38, y: 18},
+                {x: 32, y: 24},
+                {x: 25, y: 30}
             ],
-            building1_building2: [
+            entrance_technical: [
+                {x: 40, y: 10},
+                {x: 50, y: 20},
                 {x: 60, y: 30},
-                {x: 65, y: 40},
+                {x: 70, y: 40}
+            ],
+            // سایر مسیرها...
+            technical_parking: [
+                {x: 70, y: 40},
                 {x: 68, y: 50},
-                {x: 70, y: 60}
+                {x: 64, y: 60},
+                {x: 60, y: 70}
             ],
-            building1_building3: [
-                {x: 60, y: 30},
-                {x: 55, y: 45},
-                {x: 50, y: 60},
-                {x: 40, y: 70}
-            ],
-            building2_building3: [
-                {x: 70, y: 60},
-                {x: 60, y: 65},
-                {x: 50, y: 68},
-                {x: 40, y: 70}
+            humanities_parking: [
+                {x: 30, y: 60},
+                {x: 40, y: 63},
+                {x: 50, y: 66},
+                {x: 60, y: 70}
             ]
         };
 
-        // Add building markers to the map
+        // اضافه کردن نشانگر ساختمان‌ها به نقشه
         function addBuildingMarkers() {
             Object.keys(buildings).forEach(buildingId => {
                 const building = buildings[buildingId];
@@ -207,39 +224,39 @@
                 marker.title = building.name;
                 
                 marker.addEventListener('click', () => {
-                    alert(`Selected: ${building.name}`);
+                    alert(`انتخاب شد: ${building.name}`);
                 });
                 
                 document.getElementById('map-container').appendChild(marker);
             });
         }
 
-        // Draw a path between two buildings
+        // رسم مسیر بین دو ساختمان
         function drawPath(startBuilding, endBuilding) {
-            // Clear any existing paths
+            // پاک کردن مسیرهای قبلی
             document.querySelectorAll('.path-line, .waypoint').forEach(el => el.remove());
             
             const pathKey = `${startBuilding}_${endBuilding}`;
             const reversePathKey = `${endBuilding}_${startBuilding}`;
-            const path = paths[pathKey] || paths[reversePathKey].slice().reverse();
+            const path = paths[pathKey] || paths[reversePathKey]?.slice().reverse();
             
             if (!path) {
-                alert("No path defined between these buildings");
+                alert("مسیری بین این دو ساختمان تعریف نشده است");
                 return;
             }
             
-            // Draw the path lines
+            // رسم خطوط مسیر
             for (let i = 0; i < path.length - 1; i++) {
                 const start = path[i];
                 const end = path[i + 1];
                 
-                // Calculate line length and angle
+                // محاسبه طول و زاویه خط
                 const dx = end.x - start.x;
                 const dy = end.y - start.y;
                 const length = Math.sqrt(dx * dx + dy * dy);
                 const angle = Math.atan2(dy, dx) * 180 / Math.PI;
                 
-                // Create line element
+                // ایجاد عنصر خط
                 const line = document.createElement('div');
                 line.className = 'path-line';
                 line.style.width = `${length}%`;
@@ -250,7 +267,7 @@
                 document.getElementById('map-container').appendChild(line);
             }
             
-            // Add waypoint markers (excluding start and end)
+            // اضافه کردن نقاط میانی (به جز مبدا و مقصد)
             for (let i = 1; i < path.length - 1; i++) {
                 const waypoint = document.createElement('div');
                 waypoint.className = 'waypoint';
@@ -259,39 +276,39 @@
                 document.getElementById('map-container').appendChild(waypoint);
             }
             
-            // Calculate approximate distance (using Pythagorean theorem)
+            // محاسبه مسافت تقریبی
             const startPos = buildings[startBuilding];
             const endPos = buildings[endBuilding];
             const dx = endPos.x - startPos.x;
             const dy = endPos.y - startPos.y;
-            const distance = Math.sqrt(dx * dx + dy * dy) * 0.8; // Scale factor
+            const distance = Math.sqrt(dx * dx + dy * dy) * 0.8; // ضریب مقیاس
             
-            // Update path info
+            // نمایش اطلاعات مسیر
             document.getElementById('path-info').innerHTML = `
-                <strong>Path Details:</strong><br>
-                From: ${buildings[startBuilding].name}<br>
-                To: ${buildings[endBuilding].name}<br>
-                Distance: ${distance.toFixed(1)} units<br>
-                Estimated Walking Time: ${Math.round(distance * 1.5)} minutes
+                <strong>جزئیات مسیر:</strong><br>
+                از: ${buildings[startBuilding].name}<br>
+                به: ${buildings[endBuilding].name}<br>
+                مسافت: ${distance.toFixed(1)} واحد<br>
+                زمان پیاده‌روی تقریبی: ${Math.round(distance * 1.5)} دقیقه
             `;
         }
 
-        // Initialize the map
+        // مقداردهی اولیه نقشه
         function initMap() {
             addBuildingMarkers();
             
-            // Set up event listeners
+            // رویدادهای کنترل‌ها
             document.getElementById('show-path').addEventListener('click', () => {
                 const start = document.getElementById('start').value;
                 const end = document.getElementById('end').value;
                 
                 if (!start || !end) {
-                    alert("Please select both departure and destination buildings");
+                    alert("لطفاً هر دو مبدا و مقصد را انتخاب کنید");
                     return;
                 }
                 
                 if (start === end) {
-                    alert("Departure and destination cannot be the same");
+                    alert("مبدا و مقصد نمی‌توانند یکسان باشند");
                     return;
                 }
                 
@@ -306,10 +323,10 @@
             });
         }
 
-        // Initialize when the image loads
+        // مقداردهی هنگام بارگذاری تصویر
         document.getElementById('campus-map').addEventListener('load', initMap);
         
-        // Fallback in case image is already loaded
+        // اگر تصویر از قبل بارگذاری شده
         if (document.getElementById('campus-map').complete) {
             initMap();
         }
