@@ -40,6 +40,7 @@
             <option value="32.40458499768988,48.37729275226594">Building B</option>
         </select>
         <button id="route">Show Route</button>
+        <button id="showPath">Show Walking Path</button>
     </div>
 
     <!-- Leaflet JS -->
@@ -65,6 +66,31 @@
             .addTo(map)
             .bindPopup("Building B");
 
+        // Define walking path coordinates
+        const walkingPathCoordinates = [
+            [32.40263293538306, 48.3773946762085], // Building A
+            [32.4028, 48.3773], // Waypoint 1
+            [32.4035, 48.3772], // Waypoint 2
+            [32.4042, 48.3773], // Waypoint 3
+            [32.40458499768988, 48.37729275226594]  // Building B
+        ];
+
+        // Create walking path (initially hidden)
+        const walkingPath = L.polyline(walkingPathCoordinates, {
+            color: 'green',
+            weight: 6,
+            opacity: 0.7,
+            lineJoin: 'round',
+            interactive: true
+        }); // Don't add to map yet
+
+        // Calculate path distance
+        const distance = (L.latLng(walkingPathCoordinates[0]).distanceTo(
+            L.latLng(walkingPathCoordinates[walkingPathCoordinates.length - 1])
+        ) / 1000).toFixed(2);
+        
+        walkingPath.bindPopup(`Walking Path (${distance} km)<br>Approx. ${(distance * 12).toFixed(0)} minutes walking`);
+
         // Routing control
         const routingControl = L.Routing.control({
             waypoints: [],
@@ -78,6 +104,11 @@
 
         // Handle route selection
         document.getElementById('route').addEventListener('click', function() {
+            // Hide walking path if shown
+            if (map.hasLayer(walkingPath)) {
+                map.removeLayer(walkingPath);
+            }
+            
             const start = document.getElementById('start').value;
             const end = document.getElementById('end').value;
             
@@ -88,6 +119,21 @@
                 ]);
             } else {
                 alert("Please select both start and end points");
+            }
+        });
+
+        // Handle walking path display
+        document.getElementById('showPath').addEventListener('click', function() {
+            // Clear any existing routing
+            routingControl.setWaypoints([]);
+            
+            // Toggle walking path
+            if (map.hasLayer(walkingPath)) {
+                map.removeLayer(walkingPath);
+            } else {
+                walkingPath.addTo(map);
+                // Fit map to path bounds
+                map.fitBounds(walkingPath.getBounds());
             }
         });
     </script>
