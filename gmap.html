@@ -1,144 +1,188 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Campus Map - Static Solution</title>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Campus Map</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         body { margin: 0; padding: 0; }
-        #map-container { 
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            overflow: hidden;
-        }
-        #map-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .controls {
+        #map { height: 100vh; width: 100%; }
+        .map-controls {
             position: absolute;
             top: 10px;
             right: 10px;
             z-index: 1000;
             background: white;
-            padding: 10px;
+            padding: 15px;
             border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            width: 250px;
         }
-        .building-marker {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: red;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
+        select, button {
+            padding: 8px;
+            margin: 5px 0;
+            width: 100%;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
             cursor: pointer;
         }
-        .path-line {
-            position: absolute;
-            background: green;
-            height: 4px;
-            transform-origin: left center;
-            z-index: 100;
+        button:hover { background-color: #45a049; }
+        .building-icon {
+            background: #e74c3c;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
         }
     </style>
 </head>
 <body>
-    <div id="map-container">
-        <!-- Static map image (can be your own campus map) -->
-        <img id="map-image" src="https://maps.googleapis.com/maps/api/staticmap?
-            center=32.40364294040823,48.37701380252838&
-            zoom=17&
-            size=800x600&
-            scale=2&
-            maptype=hybrid&
-            markers=color:red|32.40263293538306,48.3773946762085&
-            markers=color:red|32.40458499768988,48.37729275226594&
-            path=color:0x0000FF80|weight:5|32.40263293538306,48.3773946762085|32.4028,48.3773|32.4035,48.3772|32.4042,48.3773|32.40458499768988,48.37729275226594"
-            alt="Campus Map">
+    <div id="map"></div>
+    <div class="map-controls">
+        <h2>Campus Navigator</h2>
+        <label>Departure:</label>
+        <select id="start">
+            <option value="">-- Select Building --</option>
+            <option value="32.40263293538306,48.3773946762085">Building A (Main Hall)</option>
+            <option value="32.40458499768988,48.37729275226594">Building B (Library)</option>
+        </select>
         
-        <!-- Interactive elements added via CSS positioning -->
-        <div class="building-marker" style="top: 30%; left: 40%;" data-building="A"></div>
-        <div class="building-marker" style="top: 45%; left: 60%;" data-building="B"></div>
+        <label>Destination:</label>
+        <select id="end">
+            <option value="">-- Select Building --</option>
+            <option value="32.40263293538306,48.3773946762085">Building A (Main Hall)</option>
+            <option value="32.40458499768988,48.37729275226594">Building B (Library)</option>
+        </select>
         
-        <div class="controls">
-            <h3>Campus Navigation</h3>
-            <label>From: </label>
-            <select id="start">
-                <option value="">--Select--</option>
-                <option value="A">Building A</option>
-                <option value="B">Building B</option>
-            </select>
-            <label>To: </label>
-            <select id="end">
-                <option value="">--Select--</option>
-                <option value="A">Building A</option>
-                <option value="B">Building B</option>
-            </select>
-            <button id="showPath">Show Walking Path</button>
-        </div>
+        <button id="showRoute">Show Walking Path</button>
+        <button id="resetMap">Reset Map</button>
+        
+        <div id="distanceInfo" style="margin-top: 10px; font-weight: bold;"></div>
     </div>
 
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet Routing Machine -->
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    
     <script>
-        // Building coordinates (pixel positions relative to your map image)
+        // Initialize map centered on your campus
+        const map = L.map('map').setView([32.40364294040823, 48.37701380252838], 17);
+
+        // Add OpenStreetMap base layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Define your buildings
         const buildings = {
-            'A': { x: 40, y: 30 },  // % values from top/left
-            'B': { x: 60, y: 45 }
+            "A": {
+                coords: [32.40263293538306, 48.3773946762085],
+                name: "Main Hall (Building A)",
+                description: "Administration and main lecture halls"
+            },
+            "B": {
+                coords: [32.40458499768988, 48.37729275226594],
+                name: "Library (Building B)",
+                description: "Central university library"
+            }
         };
 
-        // Path coordinates (connect the dots)
-        const pathCoords = [
-            { x: 40, y: 30 },  // Building A
-            { x: 42, y: 32 },  // Waypoint 1
-            { x: 50, y: 38 },   // Waypoint 2
-            { x: 58, y: 42 },   // Waypoint 3
-            { x: 60, y: 45 }    // Building B
-        ];
-
-        // Create path lines between points
-        function drawPath() {
-            // Clear existing paths
-            document.querySelectorAll('.path-line').forEach(el => el.remove());
-            
-            // Draw lines between each point
-            for (let i = 0; i < pathCoords.length - 1; i++) {
-                const start = pathCoords[i];
-                const end = pathCoords[i + 1];
-                
-                // Calculate line length and angle
-                const dx = end.x - start.x;
-                const dy = end.y - start.y;
-                const length = Math.sqrt(dx * dx + dy * dy);
-                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-                
-                // Create line element
-                const line = document.createElement('div');
-                line.className = 'path-line';
-                line.style.width = `${length}%`;
-                line.style.left = `${start.x}%`;
-                line.style.top = `${start.y}%`;
-                line.style.transform = `rotate(${angle}deg)`;
-                
-                document.getElementById('map-container').appendChild(line);
-            }
-        }
-
-        // Toggle path visibility
-        document.getElementById('showPath').addEventListener('click', function() {
-            if (document.querySelector('.path-line')) {
-                document.querySelectorAll('.path-line').forEach(el => el.remove());
-            } else {
-                drawPath();
-            }
+        // Create custom building markers
+        Object.keys(buildings).forEach(building => {
+            const b = buildings[building];
+            L.marker(b.coords, {
+                icon: L.divIcon({
+                    className: 'building-icon',
+                    html: `<span style="color:white;font-weight:bold;text-align:center;display:block;line-height:16px;">${building}</span>`,
+                    iconSize: [24, 24]
+                })
+            }).addTo(map)
+            .bindPopup(`
+                <h3>${b.name}</h3>
+                <p>${b.description}</p>
+                <small>Coordinates: ${b.coords[0].toFixed(6)}, ${b.coords[1].toFixed(6)}</small>
+            `);
         });
 
-        // Add click handlers to buildings
-        document.querySelectorAll('.building-marker').forEach(marker => {
-            marker.addEventListener('click', function() {
-                alert(`You clicked Building ${this.dataset.building}`);
-            });
+        // Define walking path coordinates (with realistic waypoints)
+        const walkingPath = L.polyline([
+            buildings.A.coords,
+            [32.4028, 48.3773],  // Pathway junction
+            [32.4032, 48.37725], // Courtyard
+            [32.4038, 48.37728],  // Sidewalk
+            buildings.B.coords
+        ], {
+            color: '#2ecc71',
+            weight: 6,
+            opacity: 0.7,
+            dashArray: '10, 5',
+            lineJoin: 'round'
+        });
+
+        // Initialize routing control (hidden by default)
+        const routingControl = L.Routing.control({
+            waypoints: [],
+            routeWhileDragging: false,
+            showAlternatives: false,
+            addWaypoints: false,
+            draggableWaypoints: false,
+            fitSelectedRoutes: true,
+            lineOptions: {
+                styles: [{ color: '#3498db', opacity: 0.7, weight: 5 }]
+            },
+            createMarker: function() { return null; } // Disable default markers
+        }).addTo(map);
+        routingControl.hide();
+
+        // Calculate distance between points
+        function calculateDistance(start, end) {
+            return (L.latLng(start).distanceTo(L.latLng(end) / 1000).toFixed(2); // in km
+        }
+
+        // Show route button handler
+        document.getElementById('showRoute').addEventListener('click', function() {
+            const start = document.getElementById('start').value;
+            const end = document.getElementById('end').value;
+            
+            if (!start || !end) {
+                alert("Please select both departure and destination buildings");
+                return;
+            }
+            
+            if (start === end) {
+                alert("Departure and destination cannot be the same");
+                return;
+            }
+            
+            const startCoords = start.split(',').map(Number);
+            const endCoords = end.split(',').map(Number);
+            
+            // Show the pre-defined walking path
+            walkingPath.addTo(map);
+            map.fitBounds(walkingPath.getLatLngs());
+            
+            // Calculate and display distance
+            const distance = calculateDistance(startCoords, endCoords);
+            document.getElementById('distanceInfo').innerHTML = `
+                Walking Distance: ${distance} km<br>
+                Estimated Time: ${(distance * 12).toFixed(0)} minutes
+            `;
+        });
+
+        // Reset map button handler
+        document.getElementById('resetMap').addEventListener('click', function() {
+            walkingPath.remove();
+            document.getElementById('start').value = '';
+            document.getElementById('end').value = '';
+            document.getElementById('distanceInfo').innerHTML = '';
+            routingControl.hide();
+            map.setView([32.40364294040823, 48.37701380252838], 17);
         });
     </script>
 </body>
