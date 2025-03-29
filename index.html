@@ -30,14 +30,14 @@
         <label>From: </label>
         <select id="start">
             <option value="">--Select--</option>
-            <option value="[32.40263293538306, 48.3773946762085]">Building A</option>
-            <option value="[32.40458499768988, 48.37729275226594]">Building B</option>
+            <option value="32.40263293538306,48.3773946762085">Building A</option>
+            <option value="32.40458499768988,48.37729275226594">Building B</option>
         </select>
         <label>To: </label>
         <select id="end">
             <option value="">--Select--</option>
-            <option value="[32.40263293538306, 48.3773946762085]">Building A</option>
-            <option value="[32.40458499768988, 48.37729275226594]">Building B</option>
+            <option value="32.40263293538306,48.3773946762085">Building A</option>
+            <option value="32.40458499768988,48.37729275226594">Building B</option>
         </select>
         <button id="route">Show Route</button>
     </div>
@@ -56,28 +56,14 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // Add your custom buildings as GeoJSON
-        const buildings = {
-            "type": "FeatureCollection",
-            "features": [
-                {
-                    "type": "Feature",
-                    "properties": {"name": "Building A"},
-                    "geometry": {
-                        "type": "Polygon",
-                        "coordinates": [[[48.3773946762085, 32.40263293538306], [48.37729275226594, 32.40458499768988], ...]]
-                    }
-                },
-                // Add more buildings as needed
-            ]
-        };
-
-        L.geoJSON(buildings, {
-            style: {color: "#555", weight: 2, fillOpacity: 0.2},
-            onEachFeature: function(feature, layer) {
-                layer.bindPopup(feature.properties.name);
-            }
-        }).addTo(map);
+        // Add markers for buildings
+        const buildingA = L.marker([32.40263293538306, 48.3773946762085])
+            .addTo(map)
+            .bindPopup("Building A");
+            
+        const buildingB = L.marker([32.40458499768988, 48.37729275226594])
+            .addTo(map)
+            .bindPopup("Building B");
 
         // Routing control
         const routingControl = L.Routing.control({
@@ -97,9 +83,11 @@
             
             if(start && end) {
                 routingControl.setWaypoints([
-                    L.latLng(...JSON.parse(start)),
-                    L.latLng(...JSON.parse(end))
+                    L.latLng(start.split(',').map(Number)),
+                    L.latLng(end.split(',').map(Number))
                 ]);
+            } else {
+                alert("Please select both start and end points");
             }
         });
     </script>
