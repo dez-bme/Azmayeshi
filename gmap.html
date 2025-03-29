@@ -1,145 +1,317 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Campus Map with Google Maps</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Campus Map</title>
     <style>
-        body { margin: 0; padding: 0; }
-        #map { height: 100vh; width: 100%; }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        #map-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #campus-map {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
         .controls {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 20px;
+            right: 20px;
             z-index: 1000;
-            background: white;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
-            width: 250px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            width: 280px;
+        }
+        h1 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 1.5em;
         }
         select, button {
             width: 100%;
-            padding: 8px;
-            margin: 5px 0;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #path-info {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .building-marker {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background-color: #e74c3c;
+            border: 2px solid white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            z-index: 500;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+        .path-line {
+            position: absolute;
+            background-color: #2ecc71;
+            height: 6px;
+            transform-origin: left center;
+            z-index: 400;
+            opacity: 0.8;
+        }
+        .waypoint {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: #f39c12;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 450;
         }
     </style>
 </head>
 <body>
-    <div id="map"></div>
-    <div class="controls">
-        <h3>Campus Navigation</h3>
-        <label>From: </label>
-        <select id="start">
-            <option value="">--Select--</option>
-            <option value="32.40263293538306,48.3773946762085">Building A</option>
-            <option value="32.40458499768988,48.37729275226594">Building B</option>
-        </select>
-        <label>To: </label>
-        <select id="end">
-            <option value="">--Select--</option>
-            <option value="32.40263293538306,48.3773946762085">Building A</option>
-            <option value="32.40458499768988,48.37729275226594">Building B</option>
-        </select>
-        <button id="showRoute">Show Walking Path</button>
-        <div id="distanceInfo"></div>
+    <div id="map-container">
+        <!-- Your campus map image -->
+        <img id="campus-map" src="Untitled.png" alt="University Campus Map">
+        
+        <!-- Building markers will be added here dynamically -->
+        
+        <!-- Controls panel -->
+        <div class="controls">
+            <h1>University Campus Navigator</h1>
+            <label for="start">Departure:</label>
+            <select id="start">
+                <option value="">-- Select Building --</option>
+                <option value="mosque">University Mosque</option>
+                <option value="building1">Building 1</option>
+                <option value="building2">Building 2</option>
+                <option value="building3">Building 3</option>
+            </select>
+            
+            <label for="end">Destination:</label>
+            <select id="end">
+                <option value="">-- Select Building --</option>
+                <option value="mosque">University Mosque</option>
+                <option value="building1">Building 1</option>
+                <option value="building2">Building 2</option>
+                <option value="building3">Building 3</option>
+            </select>
+            
+            <button id="show-path">Show Walking Path</button>
+            <button id="reset">Reset</button>
+            
+            <div id="path-info"></div>
+        </div>
     </div>
 
-    <!-- Load Google Maps API without key (limited functionality) -->
-    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap" async defer></script>
-    
     <script>
+        // Define building positions (as percentages of image dimensions)
+        const buildings = {
+            mosque: {
+                name: "University Mosque",
+                x: 25, // % from left
+                y: 40  // % from top
+            },
+            building1: {
+                name: "Building 1",
+                x: 60,
+                y: 30
+            },
+            building2: {
+                name: "Building 2",
+                x: 70,
+                y: 60
+            },
+            building3: {
+                name: "Building 3",
+                x: 40,
+                y: 70
+            }
+        };
+
+        // Define walking paths between buildings
+        const paths = {
+            mosque_building1: [
+                {x: 25, y: 40}, // Mosque
+                {x: 30, y: 38}, // Waypoint 1
+                {x: 45, y: 33}, // Waypoint 2
+                {x: 60, y: 30}  // Building 1
+            ],
+            mosque_building2: [
+                {x: 25, y: 40},
+                {x: 30, y: 45},
+                {x: 50, y: 55},
+                {x: 70, y: 60}
+            ],
+            mosque_building3: [
+                {x: 25, y: 40},
+                {x: 30, y: 50},
+                {x: 35, y: 60},
+                {x: 40, y: 70}
+            ],
+            building1_building2: [
+                {x: 60, y: 30},
+                {x: 65, y: 40},
+                {x: 68, y: 50},
+                {x: 70, y: 60}
+            ],
+            building1_building3: [
+                {x: 60, y: 30},
+                {x: 55, y: 45},
+                {x: 50, y: 60},
+                {x: 40, y: 70}
+            ],
+            building2_building3: [
+                {x: 70, y: 60},
+                {x: 60, y: 65},
+                {x: 50, y: 68},
+                {x: 40, y: 70}
+            ]
+        };
+
+        // Add building markers to the map
+        function addBuildingMarkers() {
+            Object.keys(buildings).forEach(buildingId => {
+                const building = buildings[buildingId];
+                const marker = document.createElement('div');
+                marker.className = 'building-marker';
+                marker.dataset.building = buildingId;
+                marker.style.left = `${building.x}%`;
+                marker.style.top = `${building.y}%`;
+                marker.title = building.name;
+                
+                marker.addEventListener('click', () => {
+                    alert(`Selected: ${building.name}`);
+                });
+                
+                document.getElementById('map-container').appendChild(marker);
+            });
+        }
+
+        // Draw a path between two buildings
+        function drawPath(startBuilding, endBuilding) {
+            // Clear any existing paths
+            document.querySelectorAll('.path-line, .waypoint').forEach(el => el.remove());
+            
+            const pathKey = `${startBuilding}_${endBuilding}`;
+            const reversePathKey = `${endBuilding}_${startBuilding}`;
+            const path = paths[pathKey] || paths[reversePathKey].slice().reverse();
+            
+            if (!path) {
+                alert("No path defined between these buildings");
+                return;
+            }
+            
+            // Draw the path lines
+            for (let i = 0; i < path.length - 1; i++) {
+                const start = path[i];
+                const end = path[i + 1];
+                
+                // Calculate line length and angle
+                const dx = end.x - start.x;
+                const dy = end.y - start.y;
+                const length = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                
+                // Create line element
+                const line = document.createElement('div');
+                line.className = 'path-line';
+                line.style.width = `${length}%`;
+                line.style.left = `${start.x}%`;
+                line.style.top = `${start.y}%`;
+                line.style.transform = `rotate(${angle}deg)`;
+                
+                document.getElementById('map-container').appendChild(line);
+            }
+            
+            // Add waypoint markers (excluding start and end)
+            for (let i = 1; i < path.length - 1; i++) {
+                const waypoint = document.createElement('div');
+                waypoint.className = 'waypoint';
+                waypoint.style.left = `${path[i].x}%`;
+                waypoint.style.top = `${path[i].y}%`;
+                document.getElementById('map-container').appendChild(waypoint);
+            }
+            
+            // Calculate approximate distance (using Pythagorean theorem)
+            const startPos = buildings[startBuilding];
+            const endPos = buildings[endBuilding];
+            const dx = endPos.x - startPos.x;
+            const dy = endPos.y - startPos.y;
+            const distance = Math.sqrt(dx * dx + dy * dy) * 0.8; // Scale factor
+            
+            // Update path info
+            document.getElementById('path-info').innerHTML = `
+                <strong>Path Details:</strong><br>
+                From: ${buildings[startBuilding].name}<br>
+                To: ${buildings[endBuilding].name}<br>
+                Distance: ${distance.toFixed(1)} units<br>
+                Estimated Walking Time: ${Math.round(distance * 1.5)} minutes
+            `;
+        }
+
+        // Initialize the map
         function initMap() {
-            // Map center coordinates
-            const campusCenter = {lat: 32.40364294040823, lng: 48.37701380252838};
+            addBuildingMarkers();
             
-            // Initialize map
-            const map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 17,
-                center: campusCenter,
-                mapTypeId: 'hybrid'
-            });
-            
-            // Define buildings
-            const buildingA = {
-                position: {lat: 32.40263293538306, lng: 48.3773946762085},
-                title: "Building A"
-            };
-            
-            const buildingB = {
-                position: {lat: 32.40458499768988, lng: 48.37729275226594},
-                title: "Building B"
-            };
-            
-            // Add markers
-            new google.maps.Marker({
-                position: buildingA.position,
-                map: map,
-                title: buildingA.title,
-                label: "A"
-            });
-            
-            new google.maps.Marker({
-                position: buildingB.position,
-                map: map,
-                title: buildingB.title,
-                label: "B"
-            });
-            
-            // Define walking path coordinates
-            const walkingPathCoordinates = [
-                buildingA.position,
-                {lat: 32.4029, lng: 48.3776}, // Waypoint 1
-                {lat: 32.4036, lng: 48.3771}, // Waypoint 2
-                {lat: 32.4040, lng: 48.3776}, // Waypoint 3
-                {lat: 32.4045, lng: 48.3771}, // Waypoint 4
-                buildingB.position
-            ];
-            
-            // Create walking path
-            const walkingPath = new google.maps.Polyline({
-                path: walkingPathCoordinates,
-                geodesic: true,
-                strokeColor: "#00FF00",
-                strokeOpacity: 1.0,
-                strokeWeight: 5
-            });
-            
-            // Handle route button click
-            document.getElementById('showRoute').addEventListener('click', function() {
+            // Set up event listeners
+            document.getElementById('show-path').addEventListener('click', () => {
                 const start = document.getElementById('start').value;
                 const end = document.getElementById('end').value;
                 
-                if(start && end) {
-                    const startCoords = start.split(',');
-                    const endCoords = end.split(',');
-                    
-                    // Set path endpoints
-                    walkingPath.setPath([
-                        {lat: parseFloat(startCoords[0]), lng: parseFloat(startCoords[1])},
-                        {lat: parseFloat(endCoords[0]), lng: parseFloat(endCoords[1])}
-                    ]);
-                    
-                    // Show the path on map
-                    walkingPath.setMap(map);
-                    
-                    // Calculate distance
-                    const distance = google.maps.geometry.spherical.computeDistanceBetween(
-                        new google.maps.LatLng(startCoords[0], startCoords[1]),
-                        new google.maps.LatLng(endCoords[0], endCoords[1])
-                    ) / 1000; // in km
-                    
-                    document.getElementById('distanceInfo').innerHTML = 
-                        `Walking distance: ${distance.toFixed(2)} km (~${Math.round(distance * 12)} minutes)`;
-                    
-                    // Fit map to path bounds
-                    const bounds = new google.maps.LatLngBounds();
-                    walkingPath.getPath().getArray().forEach(function(latLng) {
-                        bounds.extend(latLng);
-                    });
-                    map.fitBounds(bounds);
-                } else {
-                    alert("Please select both start and end points");
+                if (!start || !end) {
+                    alert("Please select both departure and destination buildings");
+                    return;
                 }
+                
+                if (start === end) {
+                    alert("Departure and destination cannot be the same");
+                    return;
+                }
+                
+                drawPath(start, end);
             });
+            
+            document.getElementById('reset').addEventListener('click', () => {
+                document.querySelectorAll('.path-line, .waypoint').forEach(el => el.remove());
+                document.getElementById('path-info').innerHTML = '';
+                document.getElementById('start').value = '';
+                document.getElementById('end').value = '';
+            });
+        }
+
+        // Initialize when the image loads
+        document.getElementById('campus-map').addEventListener('load', initMap);
+        
+        // Fallback in case image is already loaded
+        if (document.getElementById('campus-map').complete) {
+            initMap();
         }
     </script>
 </body>
