@@ -1,1 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Campus Map - Static Solution</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { margin: 0; padding: 0; }
+        #map-container { 
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #map-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        .building-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: red;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+        .path-line {
+            position: absolute;
+            background: green;
+            height: 4px;
+            transform-origin: left center;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div id="map-container">
+        <!-- Static map image (can be your own campus map) -->
+        <img id="map-image" src="https://maps.googleapis.com/maps/api/staticmap?
+            center=32.40364294040823,48.37701380252838&
+            zoom=17&
+            size=800x600&
+            scale=2&
+            maptype=hybrid&
+            markers=color:red|32.40263293538306,48.3773946762085&
+            markers=color:red|32.40458499768988,48.37729275226594&
+            path=color:0x0000FF80|weight:5|32.40263293538306,48.3773946762085|32.4028,48.3773|32.4035,48.3772|32.4042,48.3773|32.40458499768988,48.37729275226594"
+            alt="Campus Map">
+        
+        <!-- Interactive elements added via CSS positioning -->
+        <div class="building-marker" style="top: 30%; left: 40%;" data-building="A"></div>
+        <div class="building-marker" style="top: 45%; left: 60%;" data-building="B"></div>
+        
+        <div class="controls">
+            <h3>Campus Navigation</h3>
+            <label>From: </label>
+            <select id="start">
+                <option value="">--Select--</option>
+                <option value="A">Building A</option>
+                <option value="B">Building B</option>
+            </select>
+            <label>To: </label>
+            <select id="end">
+                <option value="">--Select--</option>
+                <option value="A">Building A</option>
+                <option value="B">Building B</option>
+            </select>
+            <button id="showPath">Show Walking Path</button>
+        </div>
+    </div>
 
+    <script>
+        // Building coordinates (pixel positions relative to your map image)
+        const buildings = {
+            'A': { x: 40, y: 30 },  // % values from top/left
+            'B': { x: 60, y: 45 }
+        };
+
+        // Path coordinates (connect the dots)
+        const pathCoords = [
+            { x: 40, y: 30 },  // Building A
+            { x: 42, y: 32 },  // Waypoint 1
+            { x: 50, y: 38 },   // Waypoint 2
+            { x: 58, y: 42 },   // Waypoint 3
+            { x: 60, y: 45 }    // Building B
+        ];
+
+        // Create path lines between points
+        function drawPath() {
+            // Clear existing paths
+            document.querySelectorAll('.path-line').forEach(el => el.remove());
+            
+            // Draw lines between each point
+            for (let i = 0; i < pathCoords.length - 1; i++) {
+                const start = pathCoords[i];
+                const end = pathCoords[i + 1];
+                
+                // Calculate line length and angle
+                const dx = end.x - start.x;
+                const dy = end.y - start.y;
+                const length = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                
+                // Create line element
+                const line = document.createElement('div');
+                line.className = 'path-line';
+                line.style.width = `${length}%`;
+                line.style.left = `${start.x}%`;
+                line.style.top = `${start.y}%`;
+                line.style.transform = `rotate(${angle}deg)`;
+                
+                document.getElementById('map-container').appendChild(line);
+            }
+        }
+
+        // Toggle path visibility
+        document.getElementById('showPath').addEventListener('click', function() {
+            if (document.querySelector('.path-line')) {
+                document.querySelectorAll('.path-line').forEach(el => el.remove());
+            } else {
+                drawPath();
+            }
+        });
+
+        // Add click handlers to buildings
+        document.querySelectorAll('.building-marker').forEach(marker => {
+            marker.addEventListener('click', function() {
+                alert(`You clicked Building ${this.dataset.building}`);
+            });
+        });
+    </script>
+</body>
+</html>
