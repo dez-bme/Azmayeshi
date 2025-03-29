@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نقشه دانشگاه</title>
+    <title>نقشه دانشگاه - نسخه دقیق</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             font-family: 'Tahoma', 'Arial', sans-serif;
-            background-color: #f5f5f5;
         }
         #map-container {
             position: relative;
@@ -25,7 +24,7 @@
         .controls {
             position: absolute;
             top: 20px;
-            right: 20px;
+            left: 20px;
             z-index: 1000;
             background: rgba(255, 255, 255, 0.9);
             padding: 15px;
@@ -53,10 +52,6 @@
             border: none;
             cursor: pointer;
             font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #2980b9;
         }
         #path-info {
             margin-top: 15px;
@@ -80,38 +75,48 @@
         }
         .path-line {
             position: absolute;
-            background-color: #2ecc71;
-            height: 6px;
+            background-color: rgba(46, 204, 113, 0.7);
+            height: 8px;
             transform-origin: left center;
             z-index: 400;
-            opacity: 0.8;
         }
         .waypoint {
             position: absolute;
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             background-color: #f39c12;
             border-radius: 50%;
             transform: translate(-50%, -50%);
             z-index: 450;
         }
+        .coord-input {
+            font-size: 12px;
+            margin-top: 15px;
+        }
+        .coord-input label {
+            display: block;
+            margin: 5px 0;
+        }
+        .coord-input input {
+            width: 40px;
+            padding: 3px;
+        }
     </style>
 </head>
 <body>
     <div id="map-container">
-        <!-- نقشه دانشگاه -->
         <img id="campus-map" src="Untitled.png" alt="نقشه دانشگاه">
         
-        <!-- کنترل‌ها -->
         <div class="controls">
             <h1>نقشه راهنمای دانشگاه</h1>
+            
             <label for="start">مبدا:</label>
             <select id="start">
                 <option value="">-- انتخاب ساختمان --</option>
                 <option value="nursing">دانشکده پرستاری و مامایی</option>
                 <option value="technical">دانشکده فنی</option>
                 <option value="parking">پارکینگ</option>
-                <option value="entrance">ورودی اصلی</option>
+                <option value="main-entrance">ورودی اصلی</option>
                 <option value="humanities">دانشکده علوم انسانی</option>
                 <option value="guesthouse">مهمانسرای اساتید</option>
             </select>
@@ -122,7 +127,7 @@
                 <option value="nursing">دانشکده پرستاری و مامایی</option>
                 <option value="technical">دانشکده فنی</option>
                 <option value="parking">پارکینگ</option>
-                <option value="entrance">ورودی اصلی</option>
+                <option value="main-entrance">ورودی اصلی</option>
                 <option value="humanities">دانشکده علوم انسانی</option>
                 <option value="guesthouse">مهمانسرای اساتید</option>
             </select>
@@ -130,17 +135,27 @@
             <button id="show-path">نمایش مسیر</button>
             <button id="reset">بازنشانی</button>
             
+            <div class="coord-input">
+                <h3>تنظیم مختصات:</h3>
+                <label>
+                    دانشکده پرستاری:
+                    <input type="number" id="nursing-x" placeholder="X">,
+                    <input type="number" id="nursing-y" placeholder="Y">
+                </label>
+                <!-- Add similar inputs for other buildings -->
+            </div>
+            
             <div id="path-info"></div>
         </div>
     </div>
 
     <script>
-        // موقعیت ساختمان‌ها (به صورت درصدی از عرض و ارتفاع تصویر)
+        // ساختمان‌ها با مختصات اولیه (بعداً اصلاح می‌شود)
         const buildings = {
             nursing: {
                 name: "دانشکده پرستاری و مامایی",
-                x: 25, // % از چپ
-                y: 30  // % از بالا
+                x: 25,
+                y: 30
             },
             technical: {
                 name: "دانشکده فنی",
@@ -152,7 +167,7 @@
                 x: 60,
                 y: 70
             },
-            entrance: {
+            "main-entrance": {
                 name: "ورودی اصلی",
                 x: 40,
                 y: 10
@@ -169,146 +184,96 @@
             }
         };
 
-        // مسیرهای پیاده‌روی بین ساختمان‌ها
-        const paths = {
-            // مسیرهای دانشکده پرستاری
-            nursing_technical: [
-                {x: 25, y: 30}, // پرستاری
-                {x: 35, y: 32},
-                {x: 50, y: 35},
-                {x: 70, y: 40}  // فنی
-            ],
-            nursing_parking: [
-                {x: 25, y: 30},
-                {x: 30, y: 40},
-                {x: 45, y: 55},
-                {x: 60, y: 70}
-            ],
-            // مسیرهای ورودی اصلی
-            entrance_nursing: [
-                {x: 40, y: 10},
-                {x: 38, y: 18},
-                {x: 32, y: 24},
-                {x: 25, y: 30}
-            ],
-            entrance_technical: [
-                {x: 40, y: 10},
-                {x: 50, y: 20},
-                {x: 60, y: 30},
-                {x: 70, y: 40}
-            ],
-            // سایر مسیرها...
-            technical_parking: [
-                {x: 70, y: 40},
-                {x: 68, y: 50},
-                {x: 64, y: 60},
-                {x: 60, y: 70}
-            ],
-            humanities_parking: [
-                {x: 30, y: 60},
-                {x: 40, y: 63},
-                {x: 50, y: 66},
-                {x: 60, y: 70}
-            ]
-        };
+        // مسیرهای اصلی (بر اساس جاده‌های سفید)
+        const whiteRoads = [
+            // مسیر افقی بالا
+            [{x: 20, y: 15}, {x: 80, y: 15}],
+            // مسیر عمودی سمت راست
+            [{x: 80, y: 15}, {x: 80, y: 75}],
+            // مسیر مورب مرکزی
+            [{x: 30, y: 25}, {x: 70, y: 65}]
+        ];
 
-        // اضافه کردن نشانگر ساختمان‌ها به نقشه
-        function addBuildingMarkers() {
-            Object.keys(buildings).forEach(buildingId => {
-                const building = buildings[buildingId];
-                const marker = document.createElement('div');
-                marker.className = 'building-marker';
-                marker.dataset.building = buildingId;
-                marker.style.left = `${building.x}%`;
-                marker.style.top = `${building.y}%`;
-                marker.title = building.name;
-                
-                marker.addEventListener('click', () => {
-                    alert(`انتخاب شد: ${building.name}`);
+        // تابع برای پیدا کردن نزدیک‌ترین جاده به یک نقطه
+        function findNearestRoadPoint(buildingPoint) {
+            let closestPoint = null;
+            let minDistance = Infinity;
+            
+            whiteRoads.forEach(road => {
+                // بررسی نقاط ابتدا و انتهای جاده
+                [road[0], road[1]].forEach(point => {
+                    const dx = point.x - buildingPoint.x;
+                    const dy = point.y - buildingPoint.y;
+                    const distance = Math.sqrt(dx*dx + dy*dy);
+                    
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestPoint = point;
+                    }
                 });
-                
-                document.getElementById('map-container').appendChild(marker);
             });
+            
+            return closestPoint;
         }
 
-        // رسم مسیر بین دو ساختمان
+        // تابع برای پیدا کردن مسیر بین دو نقطه روی جاده‌ها
+        function findPath(start, end) {
+            // اینجا الگوریتم پیچیده‌تری نیاز است
+            // برای نمونه، یک مسیر مستقیم برمی‌گردانیم
+            return [
+                start,
+                {x: (start.x + end.x)/2, y: (start.y + end.y)/2},
+                end
+            ];
+        }
+
+        // تابع برای رسم مسیرها
         function drawPath(startBuilding, endBuilding) {
             // پاک کردن مسیرهای قبلی
             document.querySelectorAll('.path-line, .waypoint').forEach(el => el.remove());
             
-            const pathKey = `${startBuilding}_${endBuilding}`;
-            const reversePathKey = `${endBuilding}_${startBuilding}`;
-            const path = paths[pathKey] || paths[reversePathKey]?.slice().reverse();
+            // پیدا کردن نقاط شروع و پایان روی جاده‌ها
+            const startOnRoad = findNearestRoadPoint(buildings[startBuilding]);
+            const endOnRoad = findNearestRoadPoint(buildings[endBuilding]);
             
-            if (!path) {
-                alert("مسیری بین این دو ساختمان تعریف نشده است");
-                return;
-            }
+            // پیدا کردن مسیر
+            const path = findPath(startOnRoad, endOnRoad);
             
-            // رسم خطوط مسیر
+            // رسم مسیر
             for (let i = 0; i < path.length - 1; i++) {
                 const start = path[i];
                 const end = path[i + 1];
                 
-                // محاسبه طول و زاویه خط
                 const dx = end.x - start.x;
                 const dy = end.y - start.y;
-                const length = Math.sqrt(dx * dx + dy * dy);
+                const length = Math.sqrt(dx*dx + dy*dy);
                 const angle = Math.atan2(dy, dx) * 180 / Math.PI;
                 
-                // ایجاد عنصر خط
                 const line = document.createElement('div');
                 line.className = 'path-line';
                 line.style.width = `${length}%`;
                 line.style.left = `${start.x}%`;
                 line.style.top = `${start.y}%`;
                 line.style.transform = `rotate(${angle}deg)`;
-                
                 document.getElementById('map-container').appendChild(line);
             }
             
-            // اضافه کردن نقاط میانی (به جز مبدا و مقصد)
-            for (let i = 1; i < path.length - 1; i++) {
-                const waypoint = document.createElement('div');
-                waypoint.className = 'waypoint';
-                waypoint.style.left = `${path[i].x}%`;
-                waypoint.style.top = `${path[i].y}%`;
-                document.getElementById('map-container').appendChild(waypoint);
-            }
-            
-            // محاسبه مسافت تقریبی
-            const startPos = buildings[startBuilding];
-            const endPos = buildings[endBuilding];
-            const dx = endPos.x - startPos.x;
-            const dy = endPos.y - startPos.y;
-            const distance = Math.sqrt(dx * dx + dy * dy) * 0.8; // ضریب مقیاس
-            
-            // نمایش اطلاعات مسیر
+            // نمایش اطلاعات
             document.getElementById('path-info').innerHTML = `
-                <strong>جزئیات مسیر:</strong><br>
-                از: ${buildings[startBuilding].name}<br>
-                به: ${buildings[endBuilding].name}<br>
-                مسافت: ${distance.toFixed(1)} واحد<br>
-                زمان پیاده‌روی تقریبی: ${Math.round(distance * 1.5)} دقیقه
+                <strong>مسیر پیاده‌روی:</strong><br>
+                از ${buildings[startBuilding].name} به ${buildings[endBuilding].name}
             `;
         }
 
-        // مقداردهی اولیه نقشه
+        // مقداردهی اولیه
         function initMap() {
-            addBuildingMarkers();
-            
             // رویدادهای کنترل‌ها
             document.getElementById('show-path').addEventListener('click', () => {
                 const start = document.getElementById('start').value;
                 const end = document.getElementById('end').value;
                 
                 if (!start || !end) {
-                    alert("لطفاً هر دو مبدا و مقصد را انتخاب کنید");
-                    return;
-                }
-                
-                if (start === end) {
-                    alert("مبدا و مقصد نمی‌توانند یکسان باشند");
+                    alert("لطفاً مبدا و مقصد را انتخاب کنید");
                     return;
                 }
                 
@@ -318,15 +283,23 @@
             document.getElementById('reset').addEventListener('click', () => {
                 document.querySelectorAll('.path-line, .waypoint').forEach(el => el.remove());
                 document.getElementById('path-info').innerHTML = '';
-                document.getElementById('start').value = '';
-                document.getElementById('end').value = '';
+            });
+            
+            // اضافه کردن امکان تنظیم مختصات
+            document.querySelectorAll('.coord-input input').forEach(input => {
+                input.addEventListener('change', updateBuildingPosition);
             });
         }
 
-        // مقداردهی هنگام بارگذاری تصویر
+        // تابع برای به‌روزرسانی موقعیت ساختمان‌ها
+        function updateBuildingPosition(e) {
+            const buildingId = e.target.id.split('-')[0];
+            const coord = e.target.id.split('-')[1];
+            buildings[buildingId][coord] = parseFloat(e.target.value);
+        }
+
+        // شروع هنگام بارگذاری تصویر
         document.getElementById('campus-map').addEventListener('load', initMap);
-        
-        // اگر تصویر از قبل بارگذاری شده
         if (document.getElementById('campus-map').complete) {
             initMap();
         }
