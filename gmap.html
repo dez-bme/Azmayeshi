@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Campus Map with Google Maps</title>
+    <title>Campus Map with Custom Walking Path</title>
     <style>
         body { margin: 0; padding: 0; }
         #map { height: 100vh; width: 100%; }
@@ -20,6 +20,12 @@
             width: 100%;
             padding: 8px;
             margin: 5px 0;
+        }
+        #distanceInfo {
+            margin-top: 10px;
+            padding: 5px;
+            background: #f8f8f8;
+            border-radius: 3px;
         }
     </style>
 </head>
@@ -40,11 +46,12 @@
             <option value="32.40458499768988,48.37729275226594">Building B</option>
         </select>
         <button id="showRoute">Show Walking Path</button>
+        <button id="clearRoute">Clear Path</button>
         <div id="distanceInfo"></div>
     </div>
 
-    <!-- Load Google Maps API without key (limited functionality) -->
-    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap" async defer></script>
+    <!-- Load Google Maps API with your specific waypoints -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap&libraries=geometry" async defer></script>
     
     <script>
         function initMap() {
@@ -69,39 +76,72 @@
                 title: "Building B"
             };
             
-            // Add markers
+            // Add markers with custom icons
             new google.maps.Marker({
                 position: buildingA.position,
                 map: map,
                 title: buildingA.title,
-                label: "A"
+                label: {
+                    text: "A",
+                    color: "white",
+                    fontWeight: "bold"
+                },
+                icon: {
+                    url: "https://maps.google.com/mapfiles/ms/icons/red.png",
+                    labelOrigin: new google.maps.Point(10, 10)
+                }
             });
             
             new google.maps.Marker({
                 position: buildingB.position,
                 map: map,
                 title: buildingB.title,
-                label: "B"
+                label: {
+                    text: "B",
+                    color: "white",
+                    fontWeight: "bold"
+                },
+                icon: {
+                    url: "https://maps.google.com/mapfiles/ms/icons/blue.png",
+                    labelOrigin: new google.maps.Point(10, 10)
+                }
             });
             
-            // Define walking path coordinates
+            // Define walking path coordinates with YOUR SPECIFIC WAYPOINTS
             const walkingPathCoordinates = [
                 buildingA.position,
                 {lat: 32.4029, lng: 48.3776}, // Waypoint 1
                 {lat: 32.4036, lng: 48.3771}, // Waypoint 2
                 {lat: 32.4040, lng: 48.3776}, // Waypoint 3
-                {lat: 32.4045, lng: 48.3771}, // Waypoint 4        
-            
+                {lat: 32.4045, lng: 48.3771}, // Waypoint 4
                 buildingB.position
             ];
             
-            // Create walking path
+            // Create walking path (initially hidden)
             const walkingPath = new google.maps.Polyline({
                 path: walkingPathCoordinates,
                 geodesic: true,
                 strokeColor: "#00FF00",
-                strokeOpacity: 1.0,
-                strokeWeight: 5
+                strokeOpacity: 0.8,
+                strokeWeight: 6,
+                map: null // Start with no map
+            });
+            
+            // Add waypoint markers
+            const waypointMarkers = [];
+            walkingPathCoordinates.slice(1, -1).forEach((point, index) => {
+                waypointMarkers.push(new google.maps.Marker({
+                    position: point,
+                    map: null,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 5,
+                        fillColor: "#FFD700",
+                        fillOpacity: 1,
+                        strokeWeight: 1
+                    },
+                    title: `Path Waypoint ${index + 1}`
+                }));
             });
             
             // Handle route button click
@@ -113,33 +153,54 @@
                     const startCoords = start.split(',');
                     const endCoords = end.split(',');
                     
-                    // Set path endpoints
-                    walkingPath.setPath([
+                    // Update path with selected buildings
+                    const fullPath = [
                         {lat: parseFloat(startCoords[0]), lng: parseFloat(startCoords[1])},
+                        {lat: 32.4029, lng: 48.3776}, // Waypoint 1
+                        {lat: 32.4036, lng: 48.3771}, // Waypoint 2
+                        {lat: 32.4040, lng: 48.3776}, // Waypoint 3
+                        {lat: 32.4045, lng: 48.3771}, // Waypoint 4
                         {lat: parseFloat(endCoords[0]), lng: parseFloat(endCoords[1])}
-                    ]);
+                    ];
                     
-                    // Show the path on map
+                    walkingPath.setPath(fullPath);
                     walkingPath.setMap(map);
                     
-                    // Calculate distance
-                    const distance = google.maps.geometry.spherical.computeDistanceBetween(
-                        new google.maps.LatLng(startCoords[0], startCoords[1]),
-                        new google.maps.LatLng(endCoords[0], endCoords[1])
-                    ) / 1000; // in km
+                    // Show waypoint markers
+                    waypointMarkers.forEach(marker => marker.setMap(map));
+                    
+                    // Calculate total distance
+                    let totalDistance = 0;
+                    for (let i = 0; i < fullPath.length - 1; i++) {
+                        totalDistance += google.maps.geometry.spherical.computeDistanceBetween(
+                            new google.maps.LatLng(fullPath[i]),
+                            new google.maps.LatLng(fullPath[i+1])
+                        );
+                    }
+                    const distanceKm = (totalDistance / 1000).toFixed(2);
                     
                     document.getElementById('distanceInfo').innerHTML = 
-                        `Walking distance: ${distance.toFixed(2)} km (~${Math.round(distance * 12)} minutes)`;
+                        `<strong>Walking Path Details:</strong><br>
+                        Distance: ${distanceKm} km<br>
+                        Estimated Time: ${Math.round(distanceKm * 12)} minutes<br>
+                        Waypoints: 4`;
                     
                     // Fit map to path bounds
                     const bounds = new google.maps.LatLngBounds();
-                    walkingPath.getPath().getArray().forEach(function(latLng) {
-                        bounds.extend(latLng);
-                    });
+                    fullPath.forEach(point => bounds.extend(point));
                     map.fitBounds(bounds);
                 } else {
                     alert("Please select both start and end points");
                 }
+            });
+            
+            // Clear path button
+            document.getElementById('clearRoute').addEventListener('click', function() {
+                walkingPath.setMap(null);
+                waypointMarkers.forEach(marker => marker.setMap(null));
+                document.getElementById('distanceInfo').innerHTML = "";
+                map.setCenter(campusCenter);
+                map.setZoom(17);
             });
         }
     </script>
