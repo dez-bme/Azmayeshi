@@ -171,9 +171,15 @@ footer {
         font-size: 1.8rem;
     }
 
+   // .logo {
+   //     margin-bottom: 15px;
+   // }
     .logo {
-        margin-bottom: 15px;
-    }
+    width: 10vw;  /* 10% of viewport width */
+    height: 10vw;
+    max-width: 400px; /* Prevent too large on big screens */
+    max-height: 100px;
+}
     
     .services-nav {
         flex-direction: column;
