@@ -180,9 +180,9 @@ footer {
         font-size: 1.8rem;
     }
 
-    .logo {
-        margin-bottom: 15px;
-    }
+  //  .logo {
+    //    margin-bottom: 15px;
+   // }
     
     .services-nav {
         flex-direction: column;
