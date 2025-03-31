@@ -171,15 +171,16 @@ footer {
         font-size: 1.8rem;
     }
 
-   // .logo {
-   //     margin-bottom: 15px;
-   // }
+
+
     .logo {
-    width: 10vw;  /* 10% of viewport width */
-    height: 10vw;
-    max-width: 200px; /* Prevent too large on big screens */
-    max-height: 50px;
-        margin-bottom: 15px;
+    width: 200px;
+    aspect-ratio: 1/1; /* Square ratio, adjust as needed */
+}
+
+.logo img {
+    width: 100%;
+    height: auto; /* Maintain natural aspect ratio */
 }
     
     .services-nav {
