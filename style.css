@@ -177,8 +177,9 @@ footer {
     .logo {
     width: 10vw;  /* 10% of viewport width */
     height: 10vw;
-    max-width: 400px; /* Prevent too large on big screens */
-    max-height: 100px;
+    max-width: 200px; /* Prevent too large on big screens */
+    max-height: 50px;
+        margin-bottom: 15px;
 }
     
     .services-nav {
