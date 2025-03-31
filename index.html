@@ -1,142 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html lang="fa" dir="rtl">
 <head>
-    <title>Campus Map</title>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
-    <style>
-        body { margin: 0; padding: 0; }
-        #map { height: 100vh; width: 100%; }
-        .controls {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 1000;
-            background: white;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
-        }
-    </style>
+    <title>سامانه خدمات دانشجویی دانشگاه</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="map"></div>
-    <div class="controls">
-        <h3>Campus Navigation</h3>
-        <label>From: </label>
-        <select id="start">
-            <option value="">--Select--</option>
-            <option value="32.40263293538306,48.3773946762085">Building A</option>
-            <option value="32.40458499768988,48.37729275226594">Building B</option>
-        </select>
-        <label>To: </label>
-        <select id="end">
-            <option value="">--Select--</option>
-            <option value="32.40263293538306,48.3773946762085">Building A</option>
-            <option value="32.40458499768988,48.37729275226594">Building B</option>
-        </select>
-        <button id="route">Show Route</button>
-        <button id="showPath">Show Walking Path</button>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="images/logo.png" alt="لوگوی دانشگاه">
+                </div>
+                <div class="header-text">
+                    <h1><i class="fas fa-university"></i> سامانه خدمات دانشجویی</h1>
+                    <p>دسترسی سریع به تمام خدمات دانشگاهی</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <nav class="services-menu">
+            <ul class="services-nav">
+                <li><a href="#" class="active" data-category="all"><i class="fas fa-list"></i> همه خدمات</a></li>
+                <li><a href="#" data-category="academic"><i class="fas fa-graduation-cap"></i> آموزشی</a></li>
+                <li><a href="#" data-category="financial"><i class="fas fa-money-bill-wave"></i> مالی</a></li>
+                <li><a href="#" data-category="welfare"><i class="fas fa-home"></i> رفاهی</a></li>
+                <li><a href="#" data-category="library"><i class="fas fa-book"></i> کتابخانه</a></li>
+                <li><a href="#" data-category="contact"><i class="fab fa-telegram"></i> تماس با پشتیبانی</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <!-- Academic Service -->
+            <div class="service-item" data-category="academic">
+                <h2><i class="fas fa-graduation-cap"></i> خدمات آموزشی</h2>
+                <p>سیستم جامع مدیریت آموزش دانشگاه</p>
+                <ul>
+                    <li>ثبت نام و انتخاب واحد اینترنتی</li>
+                    <li>مشاهده برنامه کلاس‌ها و امتحانات</li>
+                    <li>دریافت کارنامه تحصیلی</li>
+                    <li>مشاهده نمرات و وضعیت تحصیلی</li>
+                </ul>
+                <a href="#" class="btn">ورود به سامانه آموزشی</a>
+            </div>
+
+            <!-- Financial Service -->
+            <div class="service-item" data-category="financial">
+                <h2><i class="fas fa-money-bill-wave"></i> خدمات مالی</h2>
+                <p>مدیریت پرداخت‌ها و امور مالی دانشجویی</p>
+                <ul>
+                    <li>پرداخت اینترنتی شهریه</li>
+                    <li>مشاهده وضعیت مالی</li>
+                    <li>پرداخت هزینه خوابگاه و تغذیه</li>
+                    <li>تاریخچه تراکنش‌ها</li>
+                </ul>
+                <a href="#" class="btn">ورود به سامانه مالی</a>
+            </div>
+
+            <!-- Welfare Service -->
+            <div class="service-item" data-category="welfare">
+                <h2><i class="fas fa-home"></i> خدمات رفاهی</h2>
+                <p>امکانات رفاهی و خوابگاه‌های دانشجویی</p>
+                <ul>
+                    <li>رزرو اینترنتی خوابگاه</li>
+                    <li>سیستم تغذیه و سلف سرویس</li>
+                    <li>برنامه سرویس‌های حمل و نقل</li>
+                    <li>درخواست وام دانشجویی</li>
+                </ul>
+                <a href="#" class="btn">ورود به سامانه رفاهی</a>
+            </div>
+
+            <!-- Library Service -->
+            <div class="service-item" data-category="library">
+                <h2><i class="fas fa-book"></i> کتابخانه دیجیتال</h2>
+                <p>دسترسی به منابع علمی و کتابخانه دانشگاه</p>
+                <ul>
+                    <li>جستجوی منابع کتابخانه</li>
+                    <li>دسترسی به مقالات علمی</li>
+                    <li>تمدید اینترنتی امانت</li>
+                    <li>درخواست کتاب</li>
+                </ul>
+                <a href="#" class="btn">ورود به سامانه کتابخانه</a>
+            </div>
+
+            <!-- Contact Admin (hidden by default) -->
+            <div class="service-item hidden" data-category="contact">
+                <h2><i class="fab fa-telegram"></i> تماس با پشتیبانی</h2>
+                <p>برای ارتباط با پشتیبانی سامانه می‌توانید از راه‌های زیر استفاده نمایید:</p>
+                <ul>
+                    <li>تلگرام: <a href="https://t.me/university_support" target="_blank">@university_support</a></li>
+                    <li>ایمیل: support@university.ac.ir</li>
+                    <li>تلفن: ۰۲۱-۱۲۳۴۵۶۷۸ (ساعات اداری)</li>
+                </ul>
+                <p>پشتیبانی فنی سامانه به صورت ۲۴ ساعته از طریق تلگرام پاسخگوی شماست.</p>
+            </div>
+        </main>
     </div>
 
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Leaflet Routing Machine -->
-    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
-    
-    <script>
-        // Initialize map
-        const map = L.map('map').setView([32.40364294040823, 48.37701380252838], 17);
+    <footer>
+        <div class="container">
+            <p>© <span id="current-year"></span> کلیه حقوق این سامانه متعلق به دانشگاه می‌باشد.</p>
+            <div class="telegram-contact">
+                <a href="https://t.me/university_support" target="_blank"><i class="fab fa-telegram"></i> پشتیبانی تلگرام: @university_support</a>
+            </div>
+        </div>
+    </footer>
 
-        // Add tile layer (OpenStreetMap)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        // Add markers for buildings
-        const buildingA = L.marker([32.40263293538306, 48.3773946762085])
-            .addTo(map)
-            .bindPopup("Building A");
-            
-        const buildingB = L.marker([32.40458499768988, 48.37729275226594])
-            .addTo(map)
-            .bindPopup("Building B");
-
-        // Define walking path coordinates
-        const walkingPathCoordinates = [
-            [32.40263293538306, 48.3773946762085], // Building A
-            [32.4029, 48.3776], // Waypoint 1
-            [32.4036, 48.3771], // Waypoint 2
-            [32.4040, 48.3776], // Waypoint 3
-            [32.4045, 48.3771], // Waypoint 4
-            [32.40458499768988, 48.37729275226594]  // Building B
-        ];
-
-        // Create walking path (initially hidden)
-        const walkingPath = L.polyline(walkingPathCoordinates, {
-            color: 'green',
-            weight: 6,
-            opacity: 0.7,
-            lineJoin: 'round',
-            interactive: true
-        }); // Don't add to map yet
-
-        // Calculate path distance
-        const distance = (L.latLng(walkingPathCoordinates[0]).distanceTo(
-            L.latLng(walkingPathCoordinates[walkingPathCoordinates.length - 1])
-        ) / 1000).toFixed(2);
-        
-        walkingPath.bindPopup(`Walking Path (${distance} km)<br>Approx. ${(distance * 12).toFixed(0)} minutes walking`);
-
-        // Routing control
-        const routingControl = L.Routing.control({
-            waypoints: [],
-            routeWhileDragging: true,
-            show: false,
-            addWaypoints: false,
-            draggableWaypoints: false,
-            fitSelectedRoutes: true,
-            lineOptions: {styles: [{color: '#3388ff', opacity: 0.7, weight: 5}]}
-        }).addTo(map);
-
-        // Handle route selection
-        document.getElementById('route').addEventListener('click', function() {
-            // Hide walking path if shown
-            if (map.hasLayer(walkingPath)) {
-                map.removeLayer(walkingPath);
-            }
-            
-            const start = document.getElementById('start').value;
-            const end = document.getElementById('end').value;
-            
-            if(start && end) {
-                routingControl.setWaypoints([
-                    L.latLng(start.split(',').map(Number)),
-                    L.latLng(end.split(',').map(Number))
-                ]);
-            } else {
-                alert("Please select both start and end points");
-            }
-        });
-
-        // Handle walking path display
-        document.getElementById('showPath').addEventListener('click', function() {
-            // Clear any existing routing
-            routingControl.setWaypoints([]);
-            
-            // Toggle walking path
-            if (map.hasLayer(walkingPath)) {
-                map.removeLayer(walkingPath);
-            } else {
-                walkingPath.addTo(map);
-                // Fit map to path bounds
-                map.fitBounds(walkingPath.getBounds());
-            }
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
