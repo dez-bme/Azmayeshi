@@ -1,15 +1,14 @@
-/* Add these new styles to your existing CSS */
-
+/* Header Styles */
 .header-content {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 20px;
 }
 
 .logo {
     width: 80px;
     height: 80px;
+    margin-left: 15px; /* Space between logo and text in RTL */
 }
 
 .logo img {
@@ -20,20 +19,18 @@
 
 .header-text {
     text-align: right;
+    flex: 1;
 }
 
 /* For mobile view */
 @media (max-width: 768px) {
-    .header-content {
-        flex-direction: column;
-        text-align: center;
-    }
-    
     .logo {
-        margin-bottom: 15px;
+        width: 60px;
+        height: 60px;
+        margin-left: 10px;
     }
     
-    .header-text {
-        text-align: center;
+    .header-text h1 {
+        font-size: 1.5rem;
     }
 }
