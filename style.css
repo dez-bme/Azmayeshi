@@ -36,12 +36,20 @@ header {
 
 .header-content {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 15px;
 }
 
-.logo img {
-    height: 50px;
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    height: 60px;
+    width: auto;
 }
 
 .mobile-menu-toggle {
@@ -50,17 +58,31 @@ header {
     color: white;
     font-size: 1.5rem;
     display: none;
+    cursor: pointer;
 }
 
 /* Navigation */
 .main-nav {
     background: white;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 70%;
+    height: 100vh;
+    z-index: 1000;
+    transition: right 0.3s ease;
+    padding-top: 80px;
+}
+
+.main-nav.active {
+    right: 0;
 }
 
 .nav-links {
-    display: flex;
     list-style: none;
+    display: flex;
+    flex-direction: column;
 }
 
 .nav-links a {
@@ -69,21 +91,40 @@ header {
     color: var(--dark);
     text-decoration: none;
     transition: all 0.3s;
+    border-bottom: 1px solid #eee;
 }
 
 .nav-links a:hover,
 .nav-links a.active {
     color: var(--primary);
+    background: #f9f9f9;
 }
 
 .nav-links i {
     margin-left: 8px;
 }
 
+/* Overlay for mobile menu */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    display: none;
+}
+
+.overlay.active {
+    display: block;
+}
+
 /* Content Sections */
 .content-section {
     display: none;
     padding: 30px 0;
+    margin-top: 60px;
 }
 
 .content-section.active {
@@ -133,23 +174,10 @@ header {
     }
 
     .main-nav {
-        position: fixed;
-        top: 80px;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: white;
-        transform: translateX(100%);
-        transition: transform 0.3s;
-        z-index: 100;
-        overflow-y: auto;
+        display: block;
     }
 
-    .main-nav.active {
-        transform: translateX(0);
-    }
-
-    .nav-links {
-        flex-direction: column;
+    .content-section {
+        margin-top: 20px;
     }
 }
