@@ -2,11 +2,13 @@ document.addEventListener('DOMContentLoaded', function() {
     initApplication();
 });
 
+// Track current active service
+let currentActiveService = null;
+
 function initApplication() {
     setCurrentYear();
     initMobileMenu();
     initServiceFiltering();
-    // No default click needed - handled in initServiceFiltering
 }
 
 function setCurrentYear() {
@@ -24,7 +26,10 @@ function initMobileMenu() {
         document.body.classList.toggle('no-scroll');
     });
 
-    overlay.addEventListener('click', closeMobileMenu);
+    overlay.addEventListener('click', function() {
+        resetCurrentService(); // Reset when closing via overlay
+        closeMobileMenu();
+    });
 }
 
 function closeMobileMenu() {
@@ -33,11 +38,16 @@ function closeMobileMenu() {
     document.body.classList.remove('no-scroll');
 }
 
+function resetCurrentService() {
+    if (currentActiveService) {
+        resetServiceSection(currentActiveService);
+    }
+}
+
 function resetServiceSection(section) {
-    // Reset all elements within the specific service section
     if (!section) return;
     
-    // Form elements
+    // Reset form elements
     section.querySelectorAll('input, select, textarea').forEach(el => {
         switch(el.type) {
             case 'checkbox':
@@ -56,18 +66,18 @@ function resetServiceSection(section) {
         }
     });
     
-    // Select dropdowns
+    // Reset select dropdowns
     section.querySelectorAll('select').forEach(select => {
         select.selectedIndex = 0;
     });
     
-    // Div elements and display states
+    // Reset all div displays and classes
     section.querySelectorAll('div').forEach(div => {
         div.style.removeProperty('display');
-        div.classList.remove('active', 'shown', 'hidden');
+        div.classList.remove('active', 'shown', 'hidden', 'visible');
     });
     
-    // Other elements
+    // Reset other display properties
     section.querySelectorAll('[style*="display"], [style*="visibility"]').forEach(el => {
         el.style.removeProperty('display');
         el.style.removeProperty('visibility');
@@ -77,7 +87,6 @@ function resetServiceSection(section) {
 function initServiceFiltering() {
     const menuLinks = document.querySelectorAll('.services-nav a');
     const allServices = document.querySelectorAll('.service-item');
-    let currentService = null;
     
     // Show all services by default
     document.querySelector('.services-nav a[data-category="all"]').click();
@@ -86,8 +95,8 @@ function initServiceFiltering() {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             
-            // Get the target service category
-            const category = this.dataset.category;
+            // Reset previous service before switching
+            resetCurrentService();
             
             // Update active menu item
             document.querySelectorAll('.services-nav a').forEach(item => {
@@ -95,34 +104,31 @@ function initServiceFiltering() {
             });
             this.classList.add('active');
             
-            // Reset the previous service section before switching
-            if (currentService) {
-                resetServiceSection(currentService);
-            }
+            const category = this.dataset.category;
             
             // Filter services
             allServices.forEach(service => {
                 const shouldShow = category === 'all' || service.dataset.category === category;
                 service.classList.toggle('hidden', !shouldShow);
                 
-                // Track current visible service
+                // Track current service
                 if (shouldShow && category !== 'all') {
-                    currentService = service;
+                    currentActiveService = service;
                 }
             });
             
-            // Reset the newly selected service section
+            // Reset the new service section
             if (category !== 'all') {
                 const activeService = document.querySelector(`.service-item[data-category="${category}"]:not(.hidden)`);
                 if (activeService) {
                     resetServiceSection(activeService);
-                    currentService = activeService;
+                    currentActiveService = activeService;
                 }
             } else {
-                currentService = null;
+                currentActiveService = null;
             }
             
-            // Close mobile menu if open
+            // Close mobile menu on mobile
             if (window.innerWidth <= 768) {
                 closeMobileMenu();
             }
