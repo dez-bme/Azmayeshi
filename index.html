@@ -3,186 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سامانه خدمات دانشجویی دانشگاه</title>
+    <title>سامانه خدمات دانشجویی</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <header id="top">
+    <header>
         <div class="container">
             <div class="header-content">
-                <div class="logo">
-                    <img src="logo.png" alt="لوگوی دانشگاه" style="max-width: 50%; height: auto;">
-                </div>
-                <div class="header-text">
-                    <h1><i class="fas fa-university"></i> سامانه خدمات دانشجویی</h1>
-                    <p>دسترسی سریع به تمام خدمات دانشگاهی</p>
-                </div>
-                <button class="mobile-menu-toggle" aria-label="منو">
+                <button class="mobile-menu-toggle">
                     <i class="fas fa-bars"></i>
                 </button>
+                <div class="logo">
+                    <img src="logo.png" alt="لوگوی دانشگاه">
+                </div>
+                <h1>سامانه خدمات دانشجویی</h1>
             </div>
         </div>
     </header>
 
-    <div class="container">
-        <nav class="services-menu">
-            <ul class="services-nav">
-                <li><a href="#introduction" class="active"><i class="fas fa-home"></i> صفحه اصلی</a></li>
-                <li><a href="#academic"><i class="fas fa-graduation-cap"></i> خدمات آموزشی</a></li>
-                <li><a href="#financial"><i class="fas fa-money-bill-wave"></i> خدمات مالی</a></li>
-                <li><a href="#welfare"><i class="fas fa-home"></i> خدمات رفاهی</a></li>
-                <li><a href="#library"><i class="fas fa-book"></i> کتابخانه</a></li>
-                <li><a href="#contact"><i class="fas fa-headset"></i> تماس با ادمین</a></li>
-            </ul>
-        </nav>
-
-        <main>
-            <!-- Introduction Section -->
-            <section id="introduction" class="introduction-section">
-                <h2><i class="fas fa-info-circle"></i> به سامانه خدمات دانشجویی خوش آمدید</h2>
-                <p>این سامانه امکان دسترسی آسان به تمامی خدمات دانشگاهی را برای شما فراهم می‌کند. از طریق منوی بالا می‌توانید به بخش‌های مختلف سامانه دسترسی داشته باشید.</p>
-                <div class="features">
-                    <div class="feature">
-                        <i class="fas fa-clock"></i>
-                        <h3>دسترسی 24 ساعته</h3>
-                        <p>امکان استفاده از خدمات در هر زمان و مکان</p>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-lock"></i>
-                        <h3>امنیت بالا</h3>
-                        <p>حفظ حریم خصوصی و امنیت اطلاعات شما</p>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-mobile-alt"></i>
-                        <h3>پشتیبانی از موبایل</h3>
-                        <p>طراحی واکنش‌گرا برای همه دستگاه‌ها</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Academic Service -->
-            <section id="academic" class="service-section">
-                <div class="service-header">
-                    <h2><i class="fas fa-graduation-cap"></i> خدمات آموزشی</h2>
-                    <p>سیستم جامع مدیریت آموزش دانشگاه</p>
-                </div>
-                <div class="service-grid">
-                    <div class="service-card">
-                        <i class="fas fa-clipboard-list"></i>
-                        <h3>ثبت نام و انتخاب واحد</h3>
-                        <p>ثبت نام ترم جدید و انتخاب واحد اینترنتی</p>
-                        <a href="#" class="btn">ورود به سامانه</a>
-                    </div>
-                    <div class="service-card">
-                        <i class="fas fa-calendar-alt"></i>
-                        <h3>برنامه کلاس‌ها</h3>
-                        <p>مشاهده برنامه هفتگی و زمانبندی کلاس‌ها</p>
-                        <a href="#" class="btn">مشاهده برنامه</a>
-                    </div>
-                    <div class="service-card">
-                        <i class="fas fa-file-alt"></i>
-                        <h3>کارنامه تحصیلی</h3>
-                        <p>دریافت کارنامه و وضعیت تحصیلی</p>
-                        <a href="#" class="btn">مشاهده کارنامه</a>
-                    </div>
-                    <div class="service-card">
-                        <i class="fas fa-chart-line"></i>
-                        <h3>نمرات و معدل</h3>
-                        <p>مشاهده نمرات و محاسبه معدل</p>
-                        <a href="#" class="btn">مشاهده نمرات</a>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Financial Service -->
-            <section id="financial" class="service-section">
-                <div class="service-header">
-                    <h2><i class="fas fa-money-bill-wave"></i> خدمات مالی</h2>
-                    <p>مدیریت پرداخت‌ها و امور مالی دانشجویی</p>
-                </div>
-                <div class="service-grid">
-                    <div class="service-card">
-                        <i class="fas fa-credit-card"></i>
-                        <h3>پرداخت شهریه</h3>
-                        <p>پرداخت اینترنتی شهریه دانشگاه</p>
-                        <a href="#" class="btn">پرداخت آنلاین</a>
-                    </div>
-                    <div class="service-card">
-                        <i class="fas fa-file-invoice-dollar"></i>
-                        <h3>وضعیت مالی</h3>
-                        <p>مشاهده وضعیت حساب و پرداخت‌ها</p>
-                        <a href="#" class="btn">مشاهده وضعیت</a>
-                    </div>
-                    <div class="service-card">
-                        <i class="fas fa-home"></i>
-                        <h3>هزینه خوابگاه</h3>
-                        <p>پرداخت هزینه اقامت در خوابگاه</p>
-                        <a href="#" class="btn">پرداخت هزینه</a>
-                    </div>
-                    <div class="service-card">
-                        <i class="fas fa-history"></i>
-                        <h3>تاریخچه تراکنش‌ها</h3>
-                        <p>مشاهده سوابق پرداخت‌های انجام شده</p>
-                        <a href="#" class="btn">مشاهده تاریخچه</a>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Contact Admin Section -->
-            <section id="contact" class="contact-section">
-                <div class="contact-header">
-                    <h2><i class="fas fa-headset"></i> تماس با ادمین و پشتیبانی</h2>
-                    <p>برای ارتباط با پشتیبانی سامانه از راه‌های زیر استفاده نمایید</p>
-                </div>
-                <div class="contact-methods">
-                    <div class="contact-card">
-                        <i class="fab fa-telegram"></i>
-                        <h3>پشتیبانی تلگرام</h3>
-                        <p>پاسخگویی 24 ساعته</p>
-                        <a href="https://t.me/university_support" class="btn" target="_blank">@university_support</a>
-                    </div>
-                    <div class="contact-card">
-                        <i class="fas fa-envelope"></i>
-                        <h3>پست الکترونیک</h3>
-                        <p>پاسخگویی در 24 ساعت کاری</p>
-                        <a href="mailto:support@university.ac.ir" class="btn">support@university.ac.ir</a>
-                    </div>
-                    <div class="contact-card">
-                        <i class="fas fa-phone-alt"></i>
-                        <h3>تلفن پشتیبانی</h3>
-                        <p>شنبه تا چهارشنبه 8-16</p>
-                        <a href="tel:+982112345678" class="btn">021-12345678</a>
-                    </div>
-                    <div class="contact-card">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <h3>دفتر مرکزی</h3>
-                        <p>تهران، خیابان انقلاب، دانشگاه</p>
-                        <a href="#" class="btn">مشاهده روی نقشه</a>
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <footer>
+    <nav class="main-nav">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-links">
-                    <a href="#introduction">صفحه اصلی</a>
-                    <a href="#academic">آموزشی</a>
-                    <a href="#financial">مالی</a>
-                    <a href="#contact">تماس با ما</a>
+            <ul class="nav-links">
+                <li><a href="#" class="active" data-section="introduction"><i class="fas fa-home"></i> صفحه اصلی</a></li>
+                <li><a href="#" data-section="academic"><i class="fas fa-graduation-cap"></i> آموزشی</a></li>
+                <li><a href="#" data-section="financial"><i class="fas fa-money-bill-wave"></i> مالی</a></li>
+                <li><a href="#" data-section="contact"><i class="fas fa-headset"></i> تماس با ادمین</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Introduction (Visible by default) -->
+        <section id="introduction" class="content-section active">
+            <h2><i class="fas fa-info-circle"></i> به سامانه خدمات خوش آمدید</h2>
+            <p>برای دسترسی به خدمات مورد نظر، از منوی بالا استفاده نمایید.</p>
+        </section>
+
+        <!-- Academic Section -->
+        <section id="academic" class="content-section">
+            <h2><i class="fas fa-graduation-cap"></i> خدمات آموزشی</h2>
+            <div class="service-card">
+                <h3>ثبت نام و انتخاب واحد</h3>
+                <p>سیستم جامع مدیریت آموزش دانشگاه</p>
+                <a href="#" class="btn">ورود به سامانه</a>
+            </div>
+        </section>
+
+        <!-- Financial Section -->
+        <section id="financial" class="content-section">
+            <h2><i class="fas fa-money-bill-wave"></i> خدمات مالی</h2>
+            <div class="service-card">
+                <h3>پرداخت اینترنتی شهریه</h3>
+                <p>مدیریت پرداخت‌های دانشجویی</p>
+                <a href="#" class="btn">ورود به سامانه</a>
+            </div>
+        </section>
+
+        <!-- Contact Admin Section -->
+        <section id="contact" class="content-section">
+            <h2><i class="fas fa-headset"></i> تماس با ادمین</h2>
+            <div class="contact-methods">
+                <div class="contact-card">
+                    <i class="fab fa-telegram"></i>
+                    <h3>پشتیبانی تلگرام</h3>
+                    <p>@university_support</p>
                 </div>
-                <div class="copyright">
-                    <p>© <span id="current-year"></span> کلیه حقوق متعلق به دانشگاه می‌باشد.</p>
-                </div>
-                <div class="back-to-top">
-                    <a href="#top"><i class="fas fa-arrow-up"></i> بازگشت به بالا</a>
+                <div class="contact-card">
+                    <i class="fas fa-phone"></i>
+                    <h3>تلفن پشتیبانی</h3>
+                    <p>021-12345678</p>
                 </div>
             </div>
-        </div>
-    </footer>
+        </section>
+    </main>
 
     <script src="./script.js"></script>
 </body>
