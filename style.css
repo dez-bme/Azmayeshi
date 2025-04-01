@@ -195,10 +195,12 @@ footer {
     
     .mobile-menu-toggle {
         display: block;
+        left: auto;        /* Remove left positioning */
+        right: 20px;       /* Position on right side */
     }
     
     .header-content {
-        padding-top: 50px;
+        padding-top: 50px; /* More space for mobile menu button */
     }
     
     .header-text h1 {
@@ -208,8 +210,8 @@ footer {
     .services-menu {
         position: fixed;
         top: 0;
-        right: -280px;
-        width: 280px;
+        right: -280px;     /* Menu slides in from right */
+        width: 280px;      /* Fixed width */
         height: 100vh;
         margin: 0;
         border-radius: 0;
@@ -219,7 +221,7 @@ footer {
     }
     
     .services-menu.active {
-        right: 0;
+        right: 0;          /* Slide in to view */
     }
     
     .mobile-menu-overlay.active {
@@ -234,7 +236,7 @@ footer {
     .services-nav a {
         border-radius: 0;
         margin: 5px 0;
-        padding: 12px 20px;
+        padding: 12px 20px; /* Comfortable touch targets */
     }
     
     .service-item {
