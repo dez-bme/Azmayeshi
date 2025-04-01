@@ -14,13 +14,15 @@
                 <div class="logo">
                     <img src="logo.png" 
                         alt="لوگوی دانشگاه"
-                        style="max-width: 50%; height: auto;"
-                        >
+                        style="max-width: 50%; height: auto;">
                 </div>
                 <div class="header-text">
                     <h1><i class="fas fa-university"></i> سامانه خدمات دانشجویی</h1>
                     <p>دسترسی سریع به تمام خدمات دانشگاهی</p>
                 </div>
+                <button class="mobile-menu-toggle" aria-label="منو">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
         </div>
     </header>
@@ -38,79 +40,39 @@
         </nav>
 
         <main>
-            <!-- Academic Service -->
-            <div class="service-item" data-category="academic">
-                <h2><i class="fas fa-graduation-cap"></i> خدمات آموزشی</h2>
-                <p>سیستم جامع مدیریت آموزش دانشگاه</p>
-                <ul>
-                    <li>ثبت نام و انتخاب واحد اینترنتی</li>
-                    <li>مشاهده برنامه کلاس‌ها و امتحانات</li>
-                    <li>دریافت کارنامه تحصیلی</li>
-                    <li>مشاهده نمرات و وضعیت تحصیلی</li>
-                </ul>
-                <a href="#" class="btn">ورود به سامانه آموزشی</a>
+            <!-- Introduction Section (shown by default) -->
+            <div class="introduction-section">
+                <h2><i class="fas fa-info-circle"></i> به سامانه خدمات دانشجویی خوش آمدید</h2>
+                <p>این سامانه امکان دسترسی آسان به تمامی خدمات دانشگاهی را برای شما فراهم می‌کند. از طریق منوی بالا می‌توانید به بخش‌های مختلف سامانه دسترسی داشته باشید.</p>
+                <div class="features">
+                    <div class="feature">
+                        <i class="fas fa-clock"></i>
+                        <h3>دسترسی 24 ساعته</h3>
+                        <p>امکان استفاده از خدمات در هر زمان و مکان</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-lock"></i>
+                        <h3>امنیت بالا</h3>
+                        <p>حفظ حریم خصوصی و امنیت اطلاعات شما</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>پشتیبانی از موبایل</h3>
+                        <p>طراحی واکنش‌گرا برای همه دستگاه‌ها</p>
+                    </div>
+                </div>
             </div>
 
-            <!-- Financial Service -->
-            <div class="service-item" data-category="financial">
-                <h2><i class="fas fa-money-bill-wave"></i> خدمات مالی</h2>
-                <p>مدیریت پرداخت‌ها و امور مالی دانشجویی</p>
-                <ul>
-                    <li>پرداخت اینترنتی شهریه</li>
-                    <li>مشاهده وضعیت مالی</li>
-                    <li>پرداخت هزینه خوابگاه و تغذیه</li>
-                    <li>تاریخچه تراکنش‌ها</li>
-                </ul>
-                <a href="#" class="btn">ورود به سامانه مالی</a>
+            <!-- Service Items (hidden by default) -->
+            <div class="service-item hidden" data-category="academic">
+                <!-- ... existing academic service content ... -->
             </div>
-
-            <!-- Welfare Service -->
-            <div class="service-item" data-category="welfare">
-                <h2><i class="fas fa-home"></i> خدمات رفاهی</h2>
-                <p>امکانات رفاهی و خوابگاه‌های دانشجویی</p>
-                <ul>
-                    <li>رزرو اینترنتی خوابگاه</li>
-                    <li>سیستم تغذیه و سلف سرویس</li>
-                    <li>برنامه سرویس‌های حمل و نقل</li>
-                    <li>درخواست وام دانشجویی</li>
-                </ul>
-                <a href="#" class="btn">ورود به سامانه رفاهی</a>
-            </div>
-
-            <!-- Library Service -->
-            <div class="service-item" data-category="library">
-                <h2><i class="fas fa-book"></i> کتابخانه دیجیتال</h2>
-                <p>دسترسی به منابع علمی و کتابخانه دانشگاه</p>
-                <ul>
-                    <li>جستجوی منابع کتابخانه</li>
-                    <li>دسترسی به مقالات علمی</li>
-                    <li>تمدید اینترنتی امانت</li>
-                    <li>درخواست کتاب</li>
-                </ul>
-                <a href="#" class="btn">ورود به سامانه کتابخانه</a>
-            </div>
-
-            <!-- Contact Admin (hidden by default) -->
-            <div class="service-item hidden" data-category="contact">
-                <h2><i class="fab fa-telegram"></i> تماس با پشتیبانی</h2>
-                <p>برای ارتباط با پشتیبانی سامانه می‌توانید از راه‌های زیر استفاده نمایید:</p>
-                <ul>
-                    <li>تلگرام: <a href="https://t.me/university_support" target="_blank">@university_support</a></li>
-                    <li>ایمیل: support@university.ac.ir</li>
-                    <li>تلفن: ۰۲۱-۱۲۳۴۵۶۷۸ (ساعات اداری)</li>
-                </ul>
-                <p>پشتیبانی فنی سامانه به صورت ۲۴ ساعته از طریق تلگرام پاسخگوی شماست.</p>
-            </div>
+            <!-- ... other service items ... -->
         </main>
     </div>
 
     <footer>
-        <div class="container">
-            <p>© <span id="current-year"></span> کلیه حقوق این سامانه متعلق به دانشگاه می‌باشد.</p>
-            <div class="telegram-contact">
-                <a href="https://t.me/university_support" target="_blank"><i class="fab fa-telegram"></i> پشتیبانی تلگرام: @university_support</a>
-            </div>
-        </div>
+        <!-- ... existing footer content ... -->
     </footer>
 
     <script src="script.js"></script>
