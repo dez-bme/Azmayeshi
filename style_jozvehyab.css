@@ -7,7 +7,7 @@
           margin-top: 20px;
           font-size: 18px;
           color: green;
-          text-align: center;
+          text-align: right;
         }
         #searchResults {
           margin-top: 10px;
@@ -35,7 +35,7 @@
           margin: 0;
           display: flex;
           flex-direction: column;
-          align-items: center; /* Center list items horizontally */
+          align-items: right; /* Center list items horizontally */
           /*text-align: justify;*/
          gap: 20px; /* Add space between list items */         
          }
