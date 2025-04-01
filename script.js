@@ -1,10 +1,19 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Mobile menu toggle
+    // Mobile menu functionality
     const menuToggle = document.querySelector('.mobile-menu-toggle');
     const mainNav = document.querySelector('.main-nav');
-    
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    document.body.appendChild(overlay);
+
     menuToggle.addEventListener('click', function() {
         mainNav.classList.toggle('active');
+        overlay.classList.toggle('active');
+    });
+
+    overlay.addEventListener('click', function() {
+        mainNav.classList.remove('active');
+        overlay.classList.remove('active');
     });
 
     // Section switching
@@ -31,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Close mobile menu
             if (window.innerWidth <= 768) {
                 mainNav.classList.remove('active');
+                overlay.classList.remove('active');
             }
         });
     });
