@@ -1,39 +1,24 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Set current year in footer
+    // Initialize everything when page loads
+    initApplication();
+});
+
+function initApplication() {
+    // 1. Set current year in footer
     setCurrentYear();
     
-    // Initialize mobile menu and service filtering
+    // 2. Initialize mobile menu toggle
     initMobileMenu();
+    
+    // 3. Initialize service filtering with complete reset functionality
     initServiceFiltering();
-});
+    
+    // 4. Show all services by default
+    document.querySelector('.services-nav a[data-category="all"]').click();
+}
 
 function setCurrentYear() {
     document.getElementById('current-year').textContent = new Date().getFullYear();
-}
-
-function resetAllElements() {
-    // Reset all input fields
-    document.querySelectorAll('input, select, textarea').forEach(input => {
-        if (input.type !== 'submit' && input.type !== 'button') {
-            input.value = '';
-            input.checked = false;
-        }
-    });
-    
-    // Reset select dropdowns to first option
-    document.querySelectorAll('select').forEach(select => {
-        select.selectedIndex = 0;
-    });
-    
-    // Reset divs with inline display styles
-    document.querySelectorAll('div[style*="display"]').forEach(div => {
-        div.style.display = '';
-    });
-
-    // Reset any other elements with inline visibility
-    document.querySelectorAll('[style*="visibility"]').forEach(el => {
-        el.style.visibility = '';
-    });
 }
 
 function initMobileMenu() {
@@ -48,9 +33,56 @@ function initMobileMenu() {
     });
 
     overlay.addEventListener('click', function() {
-        servicesMenu.classList.remove('active');
-        overlay.classList.remove('active');
-        document.body.classList.remove('no-scroll');
+        closeMobileMenu();
+    });
+}
+
+function closeMobileMenu() {
+    document.querySelector('.services-menu').classList.remove('active');
+    document.querySelector('.mobile-menu-overlay').classList.remove('active');
+    document.body.classList.remove('no-scroll');
+}
+
+function resetAllElements() {
+    // Reset all form inputs
+    document.querySelectorAll('input, select, textarea').forEach(el => {
+        switch(el.type) {
+            case 'checkbox':
+            case 'radio':
+                el.checked = false;
+                break;
+            case 'file':
+                el.value = '';
+                break;
+            case 'submit':
+            case 'button':
+            case 'reset':
+                // Skip these
+                break;
+            default:
+                el.value = '';
+        }
+    });
+    
+    // Reset select dropdowns
+    document.querySelectorAll('select').forEach(select => {
+        select.selectedIndex = 0;
+    });
+    
+    // Reset all div display states
+    document.querySelectorAll('div').forEach(div => {
+        // Remove inline display styles
+        if (div.style.display) {
+            div.style.removeProperty('display');
+        }
+        // Remove common visibility classes
+        div.classList.remove('hidden', 'active', 'visible');
+    });
+    
+    // Reset other elements that might affect layout
+    document.querySelectorAll('[style*="display"], [style*="visibility"]').forEach(el => {
+        el.style.removeProperty('display');
+        el.style.removeProperty('visibility');
     });
 }
 
@@ -62,35 +94,29 @@ function initServiceFiltering() {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             
-            // Reset all elements before showing new section
+            // 1. Reset all elements to default state
             resetAllElements();
             
-            // Update active menu item
+            // 2. Update active menu item
             document.querySelectorAll('.services-nav a').forEach(item => {
                 item.classList.remove('active');
             });
             this.classList.add('active');
             
+            // 3. Filter services
             const category = this.dataset.category;
-            
-            // Filter services
             allServices.forEach(service => {
-                if (category === 'all' || service.dataset.category === category) {
+                if (category === 'all') {
                     service.classList.remove('hidden');
                 } else {
-                    service.classList.add('hidden');
+                    service.classList.toggle('hidden', service.dataset.category !== category);
                 }
             });
             
-            // Close mobile menu if open
+            // 4. Close mobile menu if open
             if (window.innerWidth <= 768) {
-                document.querySelector('.services-menu').classList.remove('active');
-                document.querySelector('.mobile-menu-overlay').classList.remove('active');
-                document.body.classList.remove('no-scroll');
+                closeMobileMenu();
             }
         });
     });
-    
-    // Show all services by default
-    document.querySelector('.services-nav a[data-category="all"]').click();
 }
