@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Set current year in footer
+    // Set current year
     document.getElementById('current-year').textContent = new Date().getFullYear();
     
     // Mobile menu toggle
@@ -8,42 +8,54 @@ document.addEventListener('DOMContentLoaded', function() {
     
     menuToggle.addEventListener('click', function() {
         servicesNav.classList.toggle('active');
+        this.querySelector('i').classList.toggle('fa-times');
     });
     
-    // Service filtering
-    const menuLinks = document.querySelectorAll('.services-nav a');
-    const allServices = document.querySelectorAll('.service-item');
-    const introSection = document.querySelector('.introduction-section');
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.services-menu') && !e.target.closest('.mobile-menu-toggle')) {
+            servicesNav.classList.remove('active');
+            menuToggle.querySelector('i').classList.remove('fa-times');
+        }
+    });
     
-    menuLinks.forEach(link => {
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('.services-nav a, .footer-links a').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
             
-            // Update active link
-            menuLinks.forEach(item => item.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Hide intro when any service is selected
-            introSection.style.display = 'none';
-            
-            const category = this.dataset.category;
-            
-            // Show/hide services
-            allServices.forEach(service => {
-                service.classList.remove('active');
-                if(category === 'all' || service.dataset.category === category) {
-                    service.classList.add('active');
-                }
+            window.scrollTo({
+                top: targetElement.offsetTop - 100,
+                behavior: 'smooth'
             });
             
             // Close mobile menu after selection
-            if(window.innerWidth <= 768) {
+            if (window.innerWidth <= 768) {
                 servicesNav.classList.remove('active');
+                menuToggle.querySelector('i').classList.remove('fa-times');
             }
         });
     });
     
-    // Show introduction by default
-    introSection.style.display = 'block';
-    document.querySelector('.services-nav a[data-category="all"]').click();
+    // Highlight active section in navigation
+    window.addEventListener('scroll', function() {
+        const scrollPosition = window.scrollY + 150;
+        
+        document.querySelectorAll('section[id]').forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                const id = section.getAttribute('id');
+                document.querySelectorAll('.services-nav a').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${id}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    });
 });
