@@ -4,6 +4,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize service filtering
     initServiceFiltering();
+    
+    // Initialize mobile menu
+    initMobileMenu();
+    
+    // Hide all service items by default (show only introduction)
+    document.querySelectorAll('.service-item').forEach(item => {
+        item.classList.add('hidden');
+    });
 });
 
 function setCurrentYear() {
@@ -13,16 +21,17 @@ function setCurrentYear() {
 function initServiceFiltering() {
     const menuLinks = document.querySelectorAll('.services-nav a');
     const allServices = document.querySelectorAll('.service-item');
+    const introduction = document.querySelector('.introduction-section');
     
     menuLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            filterServices(this, allServices);
+            filterServices(this, allServices, introduction);
         });
     });
 }
 
-function filterServices(clickedLink, allServices) {
+function filterServices(clickedLink, allServices, introduction) {
     // Update active menu item
     document.querySelectorAll('.services-nav a').forEach(item => {
         item.classList.remove('active');
@@ -30,6 +39,9 @@ function filterServices(clickedLink, allServices) {
     clickedLink.classList.add('active');
     
     const category = clickedLink.dataset.category;
+    
+    // Hide introduction when any service is selected
+    introduction.classList.add('hidden');
     
     // Filter services
     if (category === 'all') {
@@ -45,4 +57,20 @@ function filterServices(clickedLink, allServices) {
             }
         });
     }
+}
+
+function initMobileMenu() {
+    const toggle = document.querySelector('.mobile-menu-toggle');
+    const menu = document.querySelector('.services-nav');
+    
+    toggle.addEventListener('click', function() {
+        menu.classList.toggle('active');
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!menu.contains(e.target) && e.target !== toggle) {
+            menu.classList.remove('active');
+        }
+    });
 }
