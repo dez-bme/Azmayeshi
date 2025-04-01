@@ -1,20 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize everything when page loads
     initApplication();
 });
 
 function initApplication() {
-    // 1. Set current year in footer
     setCurrentYear();
-    
-    // 2. Initialize mobile menu toggle
     initMobileMenu();
-    
-    // 3. Initialize service filtering with complete reset functionality
     initServiceFiltering();
-    
-    // 4. Show all services by default
-    document.querySelector('.services-nav a[data-category="all"]').click();
+    // No default click needed - handled in initServiceFiltering
 }
 
 function setCurrentYear() {
@@ -32,9 +24,7 @@ function initMobileMenu() {
         document.body.classList.toggle('no-scroll');
     });
 
-    overlay.addEventListener('click', function() {
-        closeMobileMenu();
-    });
+    overlay.addEventListener('click', closeMobileMenu);
 }
 
 function closeMobileMenu() {
@@ -43,9 +33,12 @@ function closeMobileMenu() {
     document.body.classList.remove('no-scroll');
 }
 
-function resetAllElements() {
-    // Reset all form inputs
-    document.querySelectorAll('input, select, textarea').forEach(el => {
+function resetServiceSection(section) {
+    // Reset all elements within the specific service section
+    if (!section) return;
+    
+    // Form elements
+    section.querySelectorAll('input, select, textarea').forEach(el => {
         switch(el.type) {
             case 'checkbox':
             case 'radio':
@@ -57,30 +50,25 @@ function resetAllElements() {
             case 'submit':
             case 'button':
             case 'reset':
-                // Skip these
                 break;
             default:
                 el.value = '';
         }
     });
     
-    // Reset select dropdowns
-    document.querySelectorAll('select').forEach(select => {
+    // Select dropdowns
+    section.querySelectorAll('select').forEach(select => {
         select.selectedIndex = 0;
     });
     
-    // Reset all div display states
-    document.querySelectorAll('div').forEach(div => {
-        // Remove inline display styles
-        if (div.style.display) {
-            div.style.removeProperty('display');
-        }
-        // Remove common visibility classes
-        div.classList.remove('hidden', 'active', 'visible');
+    // Div elements and display states
+    section.querySelectorAll('div').forEach(div => {
+        div.style.removeProperty('display');
+        div.classList.remove('active', 'shown', 'hidden');
     });
     
-    // Reset other elements that might affect layout
-    document.querySelectorAll('[style*="display"], [style*="visibility"]').forEach(el => {
+    // Other elements
+    section.querySelectorAll('[style*="display"], [style*="visibility"]').forEach(el => {
         el.style.removeProperty('display');
         el.style.removeProperty('visibility');
     });
@@ -89,31 +77,52 @@ function resetAllElements() {
 function initServiceFiltering() {
     const menuLinks = document.querySelectorAll('.services-nav a');
     const allServices = document.querySelectorAll('.service-item');
+    let currentService = null;
+    
+    // Show all services by default
+    document.querySelector('.services-nav a[data-category="all"]').click();
     
     menuLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             
-            // 1. Reset all elements to default state
-            resetAllElements();
+            // Get the target service category
+            const category = this.dataset.category;
             
-            // 2. Update active menu item
+            // Update active menu item
             document.querySelectorAll('.services-nav a').forEach(item => {
                 item.classList.remove('active');
             });
             this.classList.add('active');
             
-            // 3. Filter services
-            const category = this.dataset.category;
+            // Reset the previous service section before switching
+            if (currentService) {
+                resetServiceSection(currentService);
+            }
+            
+            // Filter services
             allServices.forEach(service => {
-                if (category === 'all') {
-                    service.classList.remove('hidden');
-                } else {
-                    service.classList.toggle('hidden', service.dataset.category !== category);
+                const shouldShow = category === 'all' || service.dataset.category === category;
+                service.classList.toggle('hidden', !shouldShow);
+                
+                // Track current visible service
+                if (shouldShow && category !== 'all') {
+                    currentService = service;
                 }
             });
             
-            // 4. Close mobile menu if open
+            // Reset the newly selected service section
+            if (category !== 'all') {
+                const activeService = document.querySelector(`.service-item[data-category="${category}"]:not(.hidden)`);
+                if (activeService) {
+                    resetServiceSection(activeService);
+                    currentService = activeService;
+                }
+            } else {
+                currentService = null;
+            }
+            
+            // Close mobile menu if open
             if (window.innerWidth <= 768) {
                 closeMobileMenu();
             }
