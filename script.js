@@ -11,15 +11,28 @@ function setCurrentYear() {
     document.getElementById('current-year').textContent = new Date().getFullYear();
 }
 
-function resetAllForms() {
+function resetAllElements() {
+    // Reset all input fields
     document.querySelectorAll('input, select, textarea').forEach(input => {
         if (input.type !== 'submit' && input.type !== 'button') {
             input.value = '';
             input.checked = false;
         }
     });
+    
+    // Reset select dropdowns to first option
     document.querySelectorAll('select').forEach(select => {
         select.selectedIndex = 0;
+    });
+    
+    // Reset divs with inline display styles
+    document.querySelectorAll('div[style*="display"]').forEach(div => {
+        div.style.display = '';
+    });
+
+    // Reset any other elements with inline visibility
+    document.querySelectorAll('[style*="visibility"]').forEach(el => {
+        el.style.visibility = '';
     });
 }
 
@@ -49,8 +62,10 @@ function initServiceFiltering() {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             
-            resetAllForms();
+            // Reset all elements before showing new section
+            resetAllElements();
             
+            // Update active menu item
             document.querySelectorAll('.services-nav a').forEach(item => {
                 item.classList.remove('active');
             });
@@ -58,10 +73,13 @@ function initServiceFiltering() {
             
             const category = this.dataset.category;
             
+            // Filter services
             allServices.forEach(service => {
-                service.classList.toggle('hidden', 
-                    category !== 'all' && service.dataset.category !== category
-                );
+                if (category === 'all' || service.dataset.category === category) {
+                    service.classList.remove('hidden');
+                } else {
+                    service.classList.add('hidden');
+                }
             });
             
             // Close mobile menu if open
