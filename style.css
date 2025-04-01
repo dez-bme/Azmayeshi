@@ -190,17 +190,21 @@ footer {
 
 @media (max-width: 768px) {
     header {
-        padding: 20px 0;
+        padding: 20px 0 60px; /* Added bottom padding for menu button */
+        position: relative;
     }
     
     .mobile-menu-toggle {
         display: block;
-        left: auto;        /* Remove left positioning */
-        right: 20px;       /* Position on right side */
+        left: auto;
+        right: 20px;
+        top: auto;
+        bottom: 20px; /* Position at bottom of header */
+        transform: none;
     }
     
     .header-content {
-        padding-top: 50px; /* More space for mobile menu button */
+        padding-top: 0; /* Remove extra padding */
     }
     
     .header-text h1 {
@@ -209,19 +213,21 @@ footer {
     
     .services-menu {
         position: fixed;
-        top: 0;
-        right: -280px;     /* Menu slides in from right */
-        width: 280px;      /* Fixed width */
-        height: 100vh;
+        top: auto;
+        bottom: 0;
+        right: -280px;
+        width: 280px;
+        height: calc(100vh - 120px); /* Account for header height */
         margin: 0;
-        border-radius: 0;
+        border-radius: 8px 8px 0 0; /* Rounded top corners */
         z-index: 100;
         transition: right 0.3s ease;
         overflow-y: auto;
+        box-shadow: 0 -4px 12px rgba(0,0,0,0.1); /* Shadow at top */
     }
     
     .services-menu.active {
-        right: 0;          /* Slide in to view */
+        right: 0;
     }
     
     .mobile-menu-overlay.active {
@@ -236,7 +242,7 @@ footer {
     .services-nav a {
         border-radius: 0;
         margin: 5px 0;
-        padding: 12px 20px; /* Comfortable touch targets */
+        padding: 12px 20px;
     }
     
     .service-item {
