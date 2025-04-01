@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سامانه خدمات دانشجویی دانشگاه</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
     <header>
@@ -15,10 +15,7 @@
                     <i class="fas fa-bars"></i>
                 </button>
                 <div class="logo">
-                    <img src="logo.png" 
-                        alt="لوگوی دانشگاه"
-                        style="max-width: 50%; height: auto;"
-                        >
+                    <img src="logo.png" alt="لوگوی دانشگاه" style="max-width: 50%; height: auto;">
                 </div>
                 <div class="header-text">
                     <h1><i class="fas fa-university"></i> سامانه خدمات دانشجویی</h1>
@@ -28,6 +25,8 @@
         </div>
     </header>
 
+    <div class="mobile-menu-overlay"></div>
+    
     <div class="container">
         <nav class="services-menu">
             <ul class="services-nav">
@@ -36,7 +35,7 @@
                 <li><a href="#" data-category="financial"><i class="fas fa-money-bill-wave"></i> مالی</a></li>
                 <li><a href="#" data-category="welfare"><i class="fas fa-home"></i> رفاهی</a></li>
                 <li><a href="#" data-category="library"><i class="fas fa-book"></i> کتابخانه</a></li>
-                <li><a href="#" data-category="contact"><i class="fab fa-telegram"></i> تماس با پشتیبانی</a></li>
+                <li><a href="#" data-category="contact"><i class="fas fa-headset"></i> تماس با ادمین</a></li>
             </ul>
         </nav>
 
@@ -93,16 +92,35 @@
                 <a href="#" class="btn">ورود به سامانه کتابخانه</a>
             </div>
 
-            <!-- Contact Admin (hidden by default) -->
+            <!-- Enhanced Contact Admin Section -->
             <div class="service-item hidden" data-category="contact">
-                <h2><i class="fab fa-telegram"></i> تماس با پشتیبانی</h2>
-                <p>برای ارتباط با پشتیبانی سامانه می‌توانید از راه‌های زیر استفاده نمایید:</p>
-                <ul>
-                    <li>تلگرام: <a href="https://t.me/university_support" target="_blank">@university_support</a></li>
-                    <li>ایمیل: support@university.ac.ir</li>
-                    <li>تلفن: ۰۲۱-۱۲۳۴۵۶۷۸ (ساعات اداری)</li>
-                </ul>
-                <p>پشتیبانی فنی سامانه به صورت ۲۴ ساعته از طریق تلگرام پاسخگوی شماست.</p>
+                <h2><i class="fas fa-headset"></i> تماس با ادمین</h2>
+                <div class="contact-grid">
+                    <div class="contact-method">
+                        <i class="fab fa-telegram"></i>
+                        <h3>پشتیبانی تلگرام</h3>
+                        <p>@university_support</p>
+                        <a href="https://t.me/university_support" target="_blank" class="btn">ارتباط در تلگرام</a>
+                    </div>
+                    <div class="contact-method">
+                        <i class="fas fa-envelope"></i>
+                        <h3>ایمیل پشتیبانی</h3>
+                        <p>support@university.ac.ir</p>
+                        <a href="mailto:support@university.ac.ir" class="btn">ارسال ایمیل</a>
+                    </div>
+                    <div class="contact-method">
+                        <i class="fas fa-phone"></i>
+                        <h3>تلفن تماس</h3>
+                        <p>۰۲۱-۱۲۳۴۵۶۷۸</p>
+                        <a href="tel:+982112345678" class="btn">تماس تلفنی</a>
+                    </div>
+                    <div class="contact-method">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3>آدرس دانشگاه</h3>
+                        <p>تهران، خیابان انقلاب، دانشگاه</p>
+                        <a href="#" class="btn">نمایش نقشه</a>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -116,6 +134,6 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="./script.js"></script>
 </body>
 </html>
