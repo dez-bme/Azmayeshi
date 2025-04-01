@@ -1,61 +1,40 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Set current year
-    document.getElementById('current-year').textContent = new Date().getFullYear();
-    
     // Mobile menu toggle
     const menuToggle = document.querySelector('.mobile-menu-toggle');
-    const servicesNav = document.querySelector('.services-nav');
+    const mainNav = document.querySelector('.main-nav');
     
     menuToggle.addEventListener('click', function() {
-        servicesNav.classList.toggle('active');
-        this.querySelector('i').classList.toggle('fa-times');
+        mainNav.classList.toggle('active');
     });
+
+    // Section switching
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const contentSections = document.querySelectorAll('.content-section');
     
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.services-menu') && !e.target.closest('.mobile-menu-toggle')) {
-            servicesNav.classList.remove('active');
-            menuToggle.querySelector('i').classList.remove('fa-times');
-        }
-    });
-    
-    // Smooth scrolling for navigation links
-    document.querySelectorAll('.services-nav a, .footer-links a').forEach(link => {
+    navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            const targetId = this.getAttribute('href');
-            const targetElement = document.querySelector(targetId);
             
-            window.scrollTo({
-                top: targetElement.offsetTop - 100,
-                behavior: 'smooth'
+            // Update active nav link
+            navLinks.forEach(item => item.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Show selected section
+            const sectionId = this.dataset.section;
+            contentSections.forEach(section => {
+                section.classList.remove('active');
+                if (section.id === sectionId) {
+                    section.classList.add('active');
+                }
             });
             
-            // Close mobile menu after selection
+            // Close mobile menu
             if (window.innerWidth <= 768) {
-                servicesNav.classList.remove('active');
-                menuToggle.querySelector('i').classList.remove('fa-times');
+                mainNav.classList.remove('active');
             }
         });
     });
     
-    // Highlight active section in navigation
-    window.addEventListener('scroll', function() {
-        const scrollPosition = window.scrollY + 150;
-        
-        document.querySelectorAll('section[id]').forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.offsetHeight;
-            
-            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-                const id = section.getAttribute('id');
-                document.querySelectorAll('.services-nav a').forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === `#${id}`) {
-                        link.classList.add('active');
-                    }
-                });
-            }
-        });
-    });
+    // Show introduction by default
+    document.querySelector('.nav-links a[data-section="introduction"]').click();
 });
