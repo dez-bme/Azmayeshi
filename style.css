@@ -188,46 +188,61 @@ footer {
     margin-left: 5px;
 }
 
+/* Add this to prevent scrolling when menu is open */
+.no-scroll {
+    overflow: hidden;
+}
+
 @media (max-width: 768px) {
     header {
-        padding: 20px 0 60px; /* Added bottom padding for menu button */
+        padding: 20px 0;
         position: relative;
     }
     
     .mobile-menu-toggle {
         display: block;
-        left: auto;
+        position: fixed;
         right: 20px;
-        top: auto;
-        bottom: 20px; /* Position at bottom of header */
-        transform: none;
-    }
-    
-    .header-content {
-        padding-top: 0; /* Remove extra padding */
-    }
-    
-    .header-text h1 {
-        margin-top: 10px;
+        top: 20px;
+        background: var(--primary-color);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 102;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
     
     .services-menu {
         position: fixed;
-        top: auto;
-        bottom: 0;
+        top: 0;
         right: -280px;
         width: 280px;
-        height: calc(100vh - 120px); /* Account for header height */
+        height: 100vh;
         margin: 0;
-        border-radius: 8px 8px 0 0; /* Rounded top corners */
-        z-index: 100;
+        border-radius: 0;
+        z-index: 101;
         transition: right 0.3s ease;
         overflow-y: auto;
-        box-shadow: 0 -4px 12px rgba(0,0,0,0.1); /* Shadow at top */
+        background: white;
     }
     
     .services-menu.active {
         right: 0;
+    }
+    
+    .mobile-menu-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 100;
+        display: none;
     }
     
     .mobile-menu-overlay.active {
@@ -236,16 +251,12 @@ footer {
     
     .services-nav {
         flex-direction: column;
-        padding: 20px 0;
+        padding: 70px 20px 20px;
     }
     
     .services-nav a {
-        border-radius: 0;
+        border-radius: 5px;
         margin: 5px 0;
-        padding: 12px 20px;
-    }
-    
-    .service-item {
-        margin-top: 20px;
+        padding: 12px 15px;
     }
 }
