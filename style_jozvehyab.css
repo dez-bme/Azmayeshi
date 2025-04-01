@@ -3,6 +3,16 @@
           font-size: 16px;
           margin: 5px;
         }
+/* Add smooth transitions for form resets */
+input, select, textarea {
+    transition: all 0.3s ease;
+}
+
+/* Visual feedback when resetting */
+input:focus, select:focus, textarea:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
         #response {
           margin-top: 20px;
           font-size: 18px;
