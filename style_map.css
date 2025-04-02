@@ -1,0 +1,68 @@
+       /* .service-item[data-category="map"] h1 {
+            text-align: center; }  متن را وسط‌چین می‌کند */
+
+   .service-item[data-category="map"]  {
+            font-family: Arial, sans-serif;
+            margin: 15px;
+            text-align: center;
+        }
+
+        .service-item[data-category="map"] input,
+          .service-item[data-category="map"] button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+       .service-item[data-category="map"] #response {
+            margin-top: 20px;
+            font-size: 18px;
+            color: green;
+            text-align: right;
+        }
+
+      /*.service-item[data-category="map"] #searchResults {
+            margin-top: 10px;
+            text-align: justify;
+        } */
+
+        /* Map container styles */
+       .service-item[data-category="map"] .map-container {
+            flex: 1; /* Take up remaining space */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f4f4f4; /* Light background */
+        }
+
+      .service-item[data-category="map"] #map {
+            width: 80%;
+            height: 80%;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+
+        /* Spinner and loading text styles */
+     .service-item[data-category="map"] .spinner-container {
+            display: none; /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            color: #3498db; /* Blue text */
+        }
+
+       .service-item[data-category="map"] .spinner {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
