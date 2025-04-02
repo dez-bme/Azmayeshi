@@ -10,18 +10,18 @@
                 const response = await fetch(apiUrl);
                 const data = await response.json();
 
-                let resultDiv = document.getElementById("result");
-                resultDiv.innerHTML = "";
+                let officeSearchResultDiv = document.getElementById("officeSearchResult");
+                officeSearchResultDiv.innerHTML = "";
 
                 if (data.length === 0) {
-                    resultDiv.innerHTML = "<p>هیچ دفتری یافت نشد.</p>";
+                    Div.innerHTML = "<p>هیچ دفتری یافت نشد.</p>";
                 } else {
                     data.forEach(office => {
                         const latitude = office.latitude;
                         const longitude = office.longitude;
                         const mapUrl = `https://www.google.com/maps?q=${latitude},${longitude}`; // لینک گوگل مپ
 
-                        resultDiv.innerHTML += 
+                        officeSearchResultDiv.innerHTML += 
                             `<div>
                                 <h3>${office.officeName}</h3>
                                 <p>ساختمان: ${office.building}</p>
@@ -32,7 +32,7 @@
                 }
             } catch (error) {
                 console.error("خطا در دریافت اطلاعات:", error);
-                document.getElementById("result").innerHTML = "<p>خطایی رخ داده است.</p>";
+                document.getElementById("officeSearchResult").innerHTML = "<p>خطایی رخ داده است.</p>";
             } finally {
                 // Hide spinner
                 spinnerContainer.style.display = "none";
