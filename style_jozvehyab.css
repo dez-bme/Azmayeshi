@@ -1,68 +1,79 @@
-        input, button {
-          padding: 10px;
-          font-size: 16px;
-          margin: 5px;
-        }
-/* Add smooth transitions for form resets */
-input, select, textarea {
-    transition: all 0.3s ease;
+/* style_jozvehyab.css - Only affects the جزوه یاب (jozveh) service */
+
+/* Target the service container */
+.service-item[data-category="jozveh"] {
+    background: #f8f9fa;
+    border-right: 4px solid #3498db; /* Accent border */
+    padding: 25px;
+    border-radius: 8px;
 }
 
-/* Visual feedback when resetting */
-input:focus, select:focus, textarea:focus {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-}
-        #response {
-          margin-top: 20px;
-          font-size: 18px;
-          color: green;
-          text-align: right;
-        }
-        #searchResults {
-          margin-top: 10px;
-            text-align: justify;           
-        }
-        .author-button {
-          display: inline-block; /* Display buttons inline */
-          margin: 5px;
-          padding: 10px;
-          font-size: 16px;
-          cursor: pointer;
-          width: fit-content; /* Make button width fit content */
-            text-align: center;
-        }
-    
-        #authorButtons {
-          display: flex;  /*Use flexbox for layout */
-          flex-direction: column; /* Stack buttons vertically */
-          gap: 10px; /* Add space between buttons */
-          align-items: right;
-        }
-        #articleList {
-          list-style-type: none; /* Remove bullet points */
-          padding: 0;
-          margin: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: right; /* Center list items horizontally */
-          /*text-align: justify;*/
-         gap: 20px; /* Add space between list items */         
-         }
-    
-        .spinner {
-          border: 4px solid #f3f3f3; /* Light grey */
-          border-top: 4px solid #3498db; /* Blue */
-          border-radius: 50%;
-          width: 20px;
-          height: 20px;
-          animation: spin 1s linear infinite;
-          display: inline-block;
-          margin-left: 10px;
-        }
-    
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
+/* Style inputs/buttons only in جزوه یاب */
+.service-item[data-category="jozveh"] input,
+.service-item[data-category="jozveh"] button {
+    padding: 10px;
+    font-size: 16px;
+    margin: 5px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
 }
 
+.service-item[data-category="jozveh"] button {
+    background-color: #3498db;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.service-item[data-category="jozveh"] button:hover {
+    background-color: #2980b9;
+}
+
+/* Response message styling (جزوه یاب only) */
+.service-item[data-category="jozveh"] #response {
+    margin-top: 20px;
+    font-size: 18px;
+    text-align: right;
+}
+
+/* Search results (جزوه یاب only) */
+.service-item[data-category="jozveh"] #searchResults {
+    margin-top: 10px;
+    text-align: justify;
+}
+
+/* Author buttons (جزوه یاب only) */
+.service-item[data-category="jozveh"] .author-button {
+    display: inline-block;
+    margin: 5px;
+    padding: 10px;
+    background-color: #e9ecef;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Article list (جزوه یاب only) */
+.service-item[data-category="jozveh"] #articleList {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    gap: 20px;
+}
+
+/* Spinner (جزوه یاب only) */
+.service-item[data-category="jozveh"] .spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
