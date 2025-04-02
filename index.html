@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./style_jozvehyab.css">
+    <link rel="stylesheet" href="./style_map.css">
 </head>
 <body>
     <header>
@@ -100,7 +101,17 @@
                         <span>در حال جستجو...</span>
                     </div>                
                     <div id="result"></div>
-                
+                 <div class="map-container" id="interactive-map">
+                    <iframe
+                        src="https://www.google.com/maps/d/embed?mid=1HwkQ9siPWM2IDzoLMuGmlxEer25m8f0&ehbc=2E312F"
+                        width="640"
+                        height="480"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>                
             </div>
             
             <!-- Library Service -->
@@ -160,5 +171,6 @@
 
     <script src="./script.js"></script>
     <script src="./script_jozvehyab.js"></script>
+    <script src="./script_map.js"></script>
 </body>
 </html>
