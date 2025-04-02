@@ -4,7 +4,7 @@
    .service-item[data-category="map"]  {
             font-family: Arial, sans-serif;
             margin: 15px;
-            text-align: center;
+            text-align: right;
         }
 
         .service-item[data-category="map"] input,
@@ -45,8 +45,8 @@
         /* Spinner and loading text styles */
      .service-item[data-category="map"] .spinner-container {
             display: none; /* Hidden by default */
-            align-items: center;
-            justify-content: center;
+            align-items: right;
+            justify-content: right;
             margin-top: 20px;
             color: #3498db; /* Blue text */
         }
