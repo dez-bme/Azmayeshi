@@ -2,9 +2,18 @@
 
 .service-item[data-category="jozveh"] input,
 .service-item[data-category="jozveh"] button {
-    padding: 10px;
+    display: inline-block;
+    background: var(--primary-color);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+    font-size: 0.9rem;
+    margin-top: 10px
+    /* padding: 10px;
     font-size: 16px;
-    margin: 5px;
+    margin: 5px; */
   }
 /* Add smooth transitions for form resets 
 input, select, textarea {
