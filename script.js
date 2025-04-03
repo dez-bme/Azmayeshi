@@ -57,7 +57,7 @@ function resetAllServices() {
     document.getElementById('searchResults').style.display = 'none';
     document.getElementById('articleResults').style.display = 'none';
     document.getElementById('officeName').value = '';
-    document.getElementById('officeSearchResult').value = '';
+    document.getElementById('officeSearchResult').innerHTML = '';
     
     // Add reset for other services here if needed
     // For example:
