@@ -7,11 +7,11 @@
             spinnerContainer.style.display = "flex";
 
             try {
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-
                 let officeSearchResultDiv = document.getElementById("officeSearchResult");
                 officeSearchResultDiv.innerHTML = "";
+             
+                const response = await fetch(apiUrl);
+                const data = await response.json();
 
                 if (data.length === 0) {
                     Div.innerHTML = "<p>هیچ دفتری یافت نشد.</p>";
