@@ -7,16 +7,25 @@
             text-align: right;
         }
         .service-item[data-category="map"] input {
-            padding: 10px;
-            font-size: 16px;
-            margin: 5px;
+           padding: 8px 16px;
+           border-radius: 5px;
+           transition: background 0.3s ease;
+           font-size: 0.9rem;
+           margin-top: 10px
         }
 
        .service-item[data-category="map"] button {
-            padding: 10px;
-            font-size: 16px;
-            margin: 5px;
+           display: inline-block;
+           background: var(--primary-color);
+           color: white;
+           padding: 8px 16px;
+           border-radius: 5px;
+           text-decoration: none;
+           transition: background 0.3s ease;
+           font-size: 0.9rem;
+           margin-top: 10px
         }
+
 
        .service-item[data-category="map"] #response {
             margin-top: 20px;
@@ -25,10 +34,6 @@
             text-align: right;
         }
 
-      /*.service-item[data-category="map"] #searchResults {
-            margin-top: 10px;
-            text-align: justify;
-        } */
 
         /* Map container styles */
        .service-item[data-category="map"] .map-container {
