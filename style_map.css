@@ -60,7 +60,7 @@
             align-items: right;
             justify-content: right;
             margin-top: 20px;
-            color: #3498db; /* Blue text */
+            color: #0000ff; /* Blue text */
         }
 
        .service-item[data-category="map"] .spinner {
