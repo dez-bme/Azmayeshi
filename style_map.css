@@ -30,12 +30,12 @@
            background: var(--secondary-color);
        }
 
-       .service-item[data-category="map"] #response {
+   /*    .service-item[data-category="map"] #response {
             margin-top: 20px;
             font-size: 18px;
             color: green;
             text-align: right;
-        }
+        }  */
 
 
         /* Map container styles */
