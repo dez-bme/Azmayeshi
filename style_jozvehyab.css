@@ -6,12 +6,8 @@
     transition: background 0.3s ease;
     font-size: 0.9rem;
     margin-top: 10px
-    /* padding: 10px;
-    font-size: 16px;
-    margin: 5px; */
     } 
   
-
 .service-item[data-category="jozveh"] button {
     display: inline-block;
     background: var(--primary-color);
@@ -23,6 +19,7 @@
     font-size: 0.9rem;
     margin-top: 10px
   } 
+
 .service-item[data-category="jozveh"] button:hover {
     background: var(--secondary-color);
 }
@@ -39,9 +36,9 @@
   }
 .service-item[data-category="jozveh"] .author-button {
     display: inline-block; /* Display buttons inline */
-    margin: 5px;
-    padding: 10px;
-    font-size: 16px;
+    margin-top: 10px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
     cursor: pointer;
     width: fit-content; /* Make button width fit content */
       text-align: center;
