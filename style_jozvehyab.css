@@ -2,7 +2,7 @@
 
 .service-item[data-category="jozveh"] input {
     display: inline-block;
-    color: white;
+    /*color: white;*/
     padding: 8px 16px;
     border-radius: 5px;
     transition: background 0.3s ease;
@@ -25,7 +25,9 @@
     font-size: 0.9rem;
     margin-top: 10px
   } 
-
+.service-item[data-category="jozveh"] button:hover {
+    background: var(--secondary-color);
+}
 
 /* Add smooth transitions for form resets 
 input, select, textarea {
