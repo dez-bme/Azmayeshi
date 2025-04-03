@@ -26,6 +26,9 @@
            margin-top: 10px
         }
 
+       .service-item[data-category="map"] button:hover {
+           background: var(--secondary-color);
+       }
 
        .service-item[data-category="map"] #response {
             margin-top: 20px;
