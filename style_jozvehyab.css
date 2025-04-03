@@ -26,7 +26,7 @@
 
  .service-item[data-category="jozveh"] #response {
     margin-top: 20px;
-    font-size: 18px;
+   /* font-size: 18px; */
     color: green;
     text-align: right;
   }
