@@ -1,7 +1,6 @@
 /* style_jozvehyab.css - Only affects the جزوه یاب (jozveh) service */
 
-.service-item[data-category="jozveh"] input {
-    border: none;
+.service-item[data-category="jozveh"] input {    
     padding: 8px 16px;
     border-radius: 5px;
     transition: background 0.3s ease;
