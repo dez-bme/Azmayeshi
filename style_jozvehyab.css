@@ -1,6 +1,6 @@
 /* style_jozvehyab.css - Only affects the جزوه یاب (jozveh) service */
 
-/*.service-item[data-category="jozveh"] input {
+.service-item[data-category="jozveh"] input {
     display: inline-block;
     color: white;
     padding: 8px 16px;
@@ -10,10 +10,11 @@
     margin-top: 10px
     /* padding: 10px;
     font-size: 16px;
-    margin: 5px; } */
+    margin: 5px; */
+    } 
   
 
-/*.service-item[data-category="jozveh"] button {
+.service-item[data-category="jozveh"] button {
     display: inline-block;
     background: var(--primary-color);
     color: white;
@@ -23,7 +24,7 @@
     transition: background 0.3s ease;
     font-size: 0.9rem;
     margin-top: 10px
-  } */
+  } 
 
 
 /* Add smooth transitions for form resets 
