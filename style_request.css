@@ -1,36 +1,33 @@
-/* Target ONLY the welfare form container */
+/* Welfare Form Container - RTL Fixed */
 .service-item[data-category="welfare"] .formcontainer {
     font-family: Arial, sans-serif;
-    direction: rtl; /* RTL base */
-    text-align: right; /* Right-align text */
+    direction: rtl;
     background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     max-width: 400px;
-    width: 90%;
+    width: 100%;
     margin: 20px auto;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end; /* Right-align child elements */
 }
 
-/* Form elements styling */
+/* Form Styling */
 .service-item[data-category="welfare"] .formcontainer form {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    width: 100%; /* Ensure form takes full container width */
 }
 
-/* Right-align all form elements */
-.service-item[data-category="welfare"] .formcontainer label {
-    font-weight: bold;
-    display: block;
-    text-align: right; /* Explicit right-align */
+/* Right-Aligned Form Elements */
+.service-item[data-category="welfare"] .formcontainer h2,
+.service-item[data-category="welfare"] .formcontainer label,
+.service-item[data-category="welfare"] .formcontainer #spinner,
+.service-item[data-category="welfare"] .formcontainer #successMessage {
+    text-align: right;
     width: 100%;
 }
 
+/* Input Fields */
 .service-item[data-category="welfare"] .formcontainer input,
 .service-item[data-category="welfare"] .formcontainer select,
 .service-item[data-category="welfare"] .formcontainer textarea {
@@ -39,10 +36,10 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
-    text-align: right; /* Input text right-aligned */
+    text-align: right;
 }
 
-/* Button adjustments for RTL */
+/* Button */
 .service-item[data-category="welfare"] .formcontainer button {
     background-color: #007bff;
     color: white;
@@ -50,27 +47,42 @@
     padding: 12px;
     border-radius: 5px;
     cursor: pointer;
+    width: 100%;
     margin-top: 10px;
-    align-self: flex-end; /* Right-align button */
-    width: auto; /* Let button shrink-to-fit */
-    min-width: 120px; /* Prevent too narrow */
 }
 
+/* Hover States */
 .service-item[data-category="welfare"] .formcontainer button:hover {
     background-color: #0056b3;
 }
 
-/* RTL messages */
+/* Initially Hidden Elements */
 .service-item[data-category="welfare"] .formcontainer #spinner,
 .service-item[data-category="welfare"] .formcontainer #successMessage {
-    text-align: right; /* Right-align status messages */
-    width: 100%;
+    display: none;
+    margin-top: 15px;
 }
 
+/* Success Message */
+.service-item[data-category="welfare"] .formcontainer #successMessage {
+    color: green;
+    font-weight: bold;
+}
+
+/* Spinner */
+.service-item[data-category="welfare"] .formcontainer #spinner {
+    color: blue;
+    font-weight: bold;
+}
+
+/* Link */
 .service-item[data-category="welfare"] .formcontainer a {
-    display: inline-block; /* Better for RTL links */
-    text-align: right;
     color: #007bff;
-    margin-top: 10px;
     text-decoration: none;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.service-item[data-category="welfare"] .formcontainer a:hover {
+    text-decoration: underline;
 }
