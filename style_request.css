@@ -1,4 +1,4 @@
-.service-item[data-category="welfare"] body {
+/*.service-item[data-category="welfare"] body {
             font-family: Arial, sans-serif;
             direction: rtl;
             text-align: right;
@@ -9,12 +9,9 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            flex-direction: column; /* برای نمایش محتوا به صورت عمودی */
-        }
+            flex-direction: column; } /* برای نمایش محتوا به صورت عمودی */
 
-       
-
-     .service-item[data-category="welfare"] .container {
+.service-item[data-category="welfare"] .container {
             background: white;
             padding: 20px;
             border-radius: 10px;
