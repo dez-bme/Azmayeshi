@@ -20,10 +20,10 @@
             width: 90%;
         }
 
-        h2 {
+       /* h2 {
             text-align: center;
             color: #333;
-        }
+        } */
 
        .service-item[data-category="welfare"] label {
             font-weight: bold;
