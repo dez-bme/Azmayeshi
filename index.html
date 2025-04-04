@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./style_jozvehyab.css">
     <link rel="stylesheet" href="./style_map.css">
+    <link rel="stylesheet" href="./style_request.css">
 </head>
 <body>
     <header>
@@ -35,7 +36,7 @@
                 <li><a href="#" class="active" data-category="all"><i class="fas fa-list"></i>همه خدمات</a></li>
                 <li><a href="#" data-category="jozveh"><i class="fas fa-book"></i>جزوه یاب</a></li>
                <!-- <li><a href="#" data-category="financial"><i class="fas fa-money-bill-wave"></i>مالی</a></li>  -->
-                <li><a href="#" data-category="welfare"><i class="fas fa-home"></i>رفاهی</a></li>                
+                <li><a href="#" data-category="welfare"><i class="fas fa-users"></i>خدمات دانشجویی</a></li>                
                 <li><a href="#" data-category="map"><i class="fas fa-directions"></i>مکان یابی در دانشگاه</a></li>
                 <li><a href="#" data-category="aboutus"><i class="fas fa-info-circle"></i> در باره ما</a></li>
                 <li><a href="#" data-category="contact"><i class="fas fa-headset"></i>تماس با ادمین</a></li>
@@ -75,15 +76,32 @@
 
             <!-- Welfare Service -->
             <div class="service-item" data-category="welfare">
-                <h2><i class="fas fa-home"></i> خدمات رفاهی</h2>
+                <h2><i class="fas fa-users"></i> خدمات دانشجویی</h2>
                 <p>امکانات رفاهی و خوابگاه‌های دانشجویی</p>
-                <ul>
-                    <li>رزرو اینترنتی خوابگاه</li>
-                    <li>سیستم تغذیه و سلف سرویس</li>
-                    <li>برنامه سرویس‌های حمل و نقل</li>
-                    <li>درخواست وام دانشجویی</li>
-                </ul>
-                <a href="#" class="btn">ورود به سامانه رفاهی</a>
+                    <div class="container">
+                        <h2>فرم درخواست خدمات</h2>
+                        <form id="serviceForm">
+                            <label>نام و نام خانوادگی: <input type="text" id="fullName" required></label>
+                            <label>شماره تماس: <input type="text" id="phoneNumber" placeholder="مثلاً: 09123456789" required></label>
+                            <label>نوع خدمت:
+                                <select id="serviceType" required>
+                                    <option value="">انتخاب کنید</option>
+                                    <option value="آموزشی">خدمات آموزشی</option>
+                                    <option value="پژوهشی">خدمات پژوهشی</option>
+                                    <option value="دانشجویی">خدمات دانشجویی</option>
+                                </select>
+                            </label>
+                            <label>نوع فعالیت:
+                                <select id="subService" required>
+                                    <option value="">ابتدا نوع خدمت را انتخاب کنید</option>
+                                </select>
+                            </label>
+                            <label>توضیحات: <textarea id="description"></textarea></label>
+                            <button type="submit">ارسال درخواست</button>
+                        </form>
+                        <div id="spinner">🔄 در حال ارسال فرم...</div>
+                        <div id="successMessage">✅ درخواست شما با موفقیت ثبت شد! <a href="#" onclick="resetForm()">ثبت درخواست جدید</a></div>
+                    </div>
             </div>
             
             <!-- office search -->
@@ -170,5 +188,6 @@
     <script src="./script.js"></script>
     <script src="./script_jozvehyab.js"></script>
     <script src="./script_map.js"></script>
+    <script src="./script_request.js"></script>
 </body>
 </html>
